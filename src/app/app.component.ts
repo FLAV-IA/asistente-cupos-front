@@ -1,10 +1,16 @@
 import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { AppLayoutModule } from './layout/app.layout.module';
+import {FormsModule} from "@angular/forms";
 
 @Component({
   selector: 'app-root',
+  standalone: true,
+  imports: [RouterOutlet,AppLayoutModule,FormsModule],
+
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'asistente-cupos-front';
+  title = 'primeng-sakai';
 }

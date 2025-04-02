@@ -1,0 +1,16 @@
+<div class="card" xmlns="http://www.w3.org/1999/html">
+
+
+  <p-fileUpload  url="http://localhost:8080/alumnos/consultarcsv"
+                name="files"
+  (onUpload)="onUpload($event)"  maxFileSize="1000000"
+  ></p-fileUpload>
+
+
+  <button (click)="consultar()">Consultar</button>
+  <p *ngIf="respuesta()">{{ respuesta() }}</p>
+
+</div>
+
+
+
