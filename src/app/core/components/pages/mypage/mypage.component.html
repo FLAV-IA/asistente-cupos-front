@@ -1,14 +1,18 @@
 <div class="card" xmlns="http://www.w3.org/1999/html">
 
+  <form>
+  <textarea
+    pInputTextarea
+    rows="20"
+    cols="170"
+    [(ngModel)]="infoAlumnos"
+    name="infoAlumnos">
+  </textarea>
 
-  <p-fileUpload  url="http://localhost:8080/alumnos/consultarcsv"
-                name="files"
-  (onUpload)="onUpload($event)"  maxFileSize="1000000"
-  ></p-fileUpload>
+    <button (click)="consultar()">Consultar</button>
 
-
-  <button (click)="consultar()">Consultar</button>
-  <p *ngIf="respuesta()">{{ respuesta() }}</p>
+    <p *ngIf="respuesta()">{{ respuesta() }}</p>
+  </form>
 
 </div>
 

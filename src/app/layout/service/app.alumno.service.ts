@@ -15,7 +15,7 @@ export class AlumnoService{
 
   constructor(private http: HttpClient) {
     this.alumnos= [];
-    this.respuesta = signal<string | null>(null); // Usamos signals para manejar el estado
+    this.respuesta = signal<string | null>(null); 
 
   }
   getUser(){
@@ -23,8 +23,10 @@ export class AlumnoService{
   }
 
   consultar(userInput: string): void {
-    this.respuesta.set("hola"); // Inicializa con un valor temporal
-    this.http.get(`${this.API_URL}/consultar?userInput=${userInput}`, { responseType: 'text' })
+
+    const body = { userInput };
+
+    this.http.put(`${this.API_URL}/consultar`, body, { responseType: 'text' })
       .subscribe({
         next: (response) => {
           this.respuesta.set(response);
@@ -34,6 +36,7 @@ export class AlumnoService{
         complete: () => console.log("Consulta completada")
       });
   }
+
 
   consultarCsv(uploadedFiles: any) {
     this.http.get(`${this.API_URL}/consultar?file=${uploadedFiles}`, { responseType: 'text' })
