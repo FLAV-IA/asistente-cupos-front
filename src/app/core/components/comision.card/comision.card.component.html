@@ -1,0 +1,11 @@
+<p-card header="Comisión {{ comision.codigo }}">
+  <ng-template pTemplate="content">
+    <h5 class="text-secondary">{{ comision.materia }}</h5>
+    <p><strong>Horario:</strong> {{ comision.horario }}</p>
+    <p><strong>Cupos disponibles:</strong> {{ comision.cuposDisponibles }} / {{ comision.totalCupos }}</p>
+    <p-progressBar
+      [value]="(comision.cuposDisponibles / comision.totalCupos) * 100"
+      [showValue]="false"
+    ></p-progressBar>
+  </ng-template>
+</p-card>

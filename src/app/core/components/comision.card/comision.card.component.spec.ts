@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MypageComponent } from './mypage.component';
+import { ComisionCardComponent } from './comision.card.component';
 
-describe('MypageComponent', () => {
-  let component: MypageComponent;
-  let fixture: ComponentFixture<MypageComponent>;
+describe('ComisionesCardComponent', () => {
+  let component: ComisionCardComponent;
+  let fixture: ComponentFixture<ComisionCardComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MypageComponent]
+      imports: [ComisionCardComponent]
     })
     .compileComponents();
-    
-    fixture = TestBed.createComponent(MypageComponent);
+
+    fixture = TestBed.createComponent(ComisionCardComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

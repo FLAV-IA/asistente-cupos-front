@@ -12,5 +12,5 @@ import {FormsModule} from "@angular/forms";
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'primeng-sakai';
+  title = 'Asistente ';
 }

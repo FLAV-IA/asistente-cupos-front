@@ -15,11 +15,18 @@ export class AppMenuComponent implements OnInit {
     ngOnInit() {
         this.model = [
             {
-                label: 'Home',
+                label: 'Inscripciones',
                 items: [
-                    { label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/'] }
+                    { label: 'Asistente cupos', icon: 'pi pi-fw pi-microchip-ai', routerLink: ['/'] },
+                    { label: 'Plan de estudio', icon: 'pi pi-fw pi-calendar', routerLink: ['/plan'] },
+                  { label: 'Comisiones', icon: 'pi pi-fw pi-folder', routerLink: ['/comisiones'] },
+                  { label: 'Historia academica', icon: 'pi pi-fw pi-user', routerLink: ['/alumnos'] },
+
+
+
                 ]
-            }
+            },
+
         ];
     }
 }
