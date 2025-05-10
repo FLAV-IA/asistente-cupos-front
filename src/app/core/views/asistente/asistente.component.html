@@ -1,149 +1,154 @@
-<p-panel header="Consulta de Cupos" styleClass="mb-4 shadow-2 border-round-lg" [toggleable]="true">
-  <form class="p-fluid px-4 py-2">
-    <!-- Subida de archivo -->
-    <div class="mb-4">
-      <label class="font-bold text-lg mb-2 block">Cargar CSV de Información de Alumnos:</label>
-      <p-fileUpload
-        #fileUpload
-        name="csvFile"
-        mode="basic"
-        chooseLabel="📁 Seleccionar archivo CSV"
-        accept=".csv"
-        [auto]="true"
-        [customUpload]="true"
-        (uploadHandler)="handleUpload($event)"
-        (onSelect)="handleFileSelect($event)"
-        (clearHandler)="handleClear()"
-        styleClass="p-button-outlined p-button-info w-full"
-      ></p-fileUpload>
-    </div>
+<div class="grid">
 
-    <!-- Estado del archivo -->
-    <div *ngIf="fileLoaded" class="flex align-items-center gap-2 text-green-600 mb-2">
-      <i class="pi pi-check-circle text-xl"></i>
-      <span class="text-md">Archivo cargado correctamente</span>
-    </div>
-    <div *ngIf="!fileLoaded" class="flex align-items-center gap-2 text-red-500 mb-2">
-      <i class="pi pi-times-circle text-xl"></i>
-      <span class="text-md">No se ha cargado ningún archivo</span>
-    </div>
+  <div [ngClass]="fileLoaded ? 'col-8' : 'col-12'">
+    <h4 class="mb-3">Asistente de Inscripción</h4>
 
-    <!-- Botón de borrar -->
-    <div class="flex justify-content-center mt-4">
-      <p-button
-        icon="pi pi-trash"
-        label="Borrar archivo"
-        severity="danger"
-        class="p-button-rounded p-button-outlined"
-        (click)="handleClear()"
-      ></p-button>
-    </div>
+    <p-panel header="Consulta de Cupos" styleClass="mb-4 shadow-2 border-round-lg" [toggleable]="true">
+      <form class="p-fluid px-4 py-2">
+        <!-- Subida de archivo -->
+        <div class="mb-4">
+          <label class="font-bold text-lg mb-2 block">Cargar CSV de Información de Alumnos:</label>
+          <p-fileUpload
+            #fileUpload
+            name="csvFile"
+            mode="basic"
+            chooseLabel="📁 Seleccionar archivo CSV"
+            accept=".csv"
+            [auto]="true"
+            [customUpload]="true"
+            (uploadHandler)="handleUpload($event)"
+            (onSelect)="handleFileSelect($event)"
+            (clearHandler)="handleClear()"
+            styleClass="p-button-outlined p-button-info w-full"
+          ></p-fileUpload>
+        </div>
 
-    <!-- Spinner -->
-    <div *ngIf="loading" class="flex flex-column align-items-center justify-content-center mt-4 gap-2">
-      <i class="pi pi-spin pi-spinner text-3xl text-primary"></i>
-      <span class="text-md text-primary font-medium">Procesando...</span>
-    </div>
+        <!-- Estado del archivo -->
+        <div *ngIf="fileLoaded" class="flex align-items-center gap-2 text-green-600 mb-2">
+          <i class="pi pi-check-circle text-xl"></i>
+          <span class="text-md">Archivo cargado correctamente</span>
+        </div>
+        <div *ngIf="!fileLoaded" class="flex align-items-center gap-2 text-red-500 mb-2">
+          <i class="pi pi-times-circle text-xl"></i>
+          <span class="text-md">No se ha cargado ningún archivo</span>
+        </div>
 
-    <!-- Botón de consulta -->
-    <div class="flex justify-content-center mt-4">
-      <p-button
-        icon="pi pi-search"
-        label="Consultar"
-        severity="success"
-        class="p-button-rounded p-button-raised shadow-2"
-        (click)="consultar()"
-      ></p-button>
+        <!-- Botón de borrar -->
+        <div class="flex justify-content-center mt-4">
+          <p-button
+            icon="pi pi-trash"
+            label="Borrar archivo"
+            severity="danger"
+            class="p-button-rounded p-button-outlined"
+            (click)="handleClear()"
+          ></p-button>
+        </div>
+
+        <!-- Spinner -->
+        <div *ngIf="loading" class="flex flex-column align-items-center justify-content-center mt-4 gap-2">
+          <i class="pi pi-spin pi-spinner text-3xl text-primary"></i>
+          <span class="text-md text-primary font-medium">Procesando...</span>
+        </div>
+
+        <!-- Botón de consulta -->
+        <div class="flex justify-content-center mt-4">
+          <p-button
+            icon="pi pi-search"
+            label="Consultar"
+            severity="success"
+            class="p-button-rounded p-button-raised shadow-2"
+            (click)="consultar()"
+          ></p-button>
+        </div>
+      </form>
+    </p-panel>
+
+    <!-- Tabla de pedidos de cupos -->
+    <p-table
+      [value]="cuposAsignados"
+      [paginator]="true"
+      [rows]="10"
+      [responsiveLayout]="'scroll'"
+      class="p-datatable-gridlines p-datatable-striped"
+      [tableStyle]="{ 'min-width': '100%' }"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Estudiante</th>
+          <th>Comisión</th>
+          <th>Prioridad</th>
+          <th>Asignado</th>
+          <th>Motivo</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-cupo>
+        <tr>
+          <td>{{ cupo.nombreEstudiante }}</td>
+          <td>{{ cupo.codigoComision }}</td>
+          <td>
+            <p-knob
+              [ngModel]="cupo.prioridad"
+              [min]="0"
+              [max]="100"
+              [readonly]="true"
+              [size]="50"
+              [valueColor]="'#22C55E'"
+              [rangeColor]="'#D1FAE5'"
+            ></p-knob>
+          </td>
+          <td>
+            <p-tag
+              [value]="cupo.cupoAsignado ? 'Sí' : 'No'"
+              [severity]="cupo.cupoAsignado ? 'success' : 'danger'"
+              class="font-bold"
+            ></p-tag>
+          </td>
+          <td>{{ cupo.motivo }}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <div class="col-4">
+    <div *ngIf="datosCSV.length > 0">
+      <h4 class="mb-3">Previsualizacion de Pedidos</h4>
+      <p-table
+        [value]="datosCSV"
+        [paginator]="true"
+        [rows]="15"
+        [rowsPerPageOptions]="[5, 10, 15, 20]"
+        [responsiveLayout]="'scroll'"
+        class="p-datatable-sm p-datatable-striped p-datatable-hoverable-rows"
+        [tableStyle]="{ 'min-width': '100%' }"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th>DNI</th>
+            <th>Comisiones</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-row>
+          <tr>
+            <td>
+              <i class="pi pi-user mr-2"></i>{{ row.dni }}
+            </td>
+            <td>
+              <p-listbox
+                [options]="formatCodigoList(row.codigosComisiones)"
+                [(ngModel)]="row.codigos_comisiones"
+                optionLabel="label"
+                [style]="{ width: '15rem' }"
+                scrollHeight="120px"
+                [virtualScroll]="true"
+                [virtualScrollItemSize]="5"
+              ></p-listbox>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
     </div>
-  </form>
-</p-panel>
-<!-- Vista previa del archivo CSV cargado -->
-<div *ngIf="datosCSV.length > 0" class="mt-5">
-  <h4 class="mb-3">Vista previa de peticiones de inscripción</h4>
-  <p-table
-    [value]="datosCSV"
-    [paginator]="true"
-    [rows]="5"
-    [rowsPerPageOptions]="[5, 10, 20]"
-    [responsiveLayout]="'scroll'"
-    class="p-datatable-sm p-datatable-striped p-datatable-hoverable-rows"
-    [tableStyle]="{ 'min-width': '40rem' }"
-  >
-    <ng-template pTemplate="header">
-      <tr>
-        <th>DNI</th>
-        <th>Comisiones</th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-row>
-      <tr>
-        <td>{{ row.DNI }}</td>
-        <td>
-          <ng-container *ngFor="let codigo of row.Codigo.split(',')">
-            <span class="p-tag p-tag-rounded p-mr-2">{{ codigo }}</span>
-          </ng-container>
-        </td>
-      </tr>
-    </ng-template>
-  </p-table>
+  </div>
+
 </div>
-
-
-<p-panel header="Cupos Asignados" styleClass="shadow-2 border-round-lg" [toggleable]="true">
-  <h4 class="mb-3">Sugerencia de inscripcion</h4>
-
-  <p-table
-    [value]="cuposAsignados"
-    [paginator]="true"
-    [rows]="10"
-    [responsiveLayout]="'scroll'"
-    class="p-datatable-gridlines p-datatable-striped"
-    [tableStyle]="{ 'min-width': '60rem' }"
-  >
-    <ng-template pTemplate="header">
-      <tr>
-        <th>Legajo</th>
-        <th>Materia</th>
-        <th>Comisión</th>
-        <th>Prioridad</th>
-        <th>Cupo Asignado</th>
-        <th>Explicación</th>
-        <th>Correlativas</th>
-      </tr>
-    </ng-template>
-
-    <ng-template pTemplate="body" let-cupo>
-      <tr>
-        <td>{{ cupo.nombre }}</td>
-        <td>{{ cupo.materia }}</td>
-        <td>{{ cupo.comision }}</td>
-        <td>
-          <p-knob
-            [ngModel]="cupo.prioridad"
-            [min]="0"
-            [max]="100"
-            [readonly]="true"
-            [size]="50"
-            [valueColor]="'#22C55E'"
-            [rangeColor]="'#D1FAE5'"
-          ></p-knob>
-        </td>
-        <td>
-          <p-tag
-            [value]="cupo.cupoAsignado ? 'Sí' : 'No'"
-            [severity]="cupo.cupoAsignado ? 'success' : 'danger'"
-            class="font-bold"
-          ></p-tag>
-        </td>
-        <td>{{ cupo.explicacion }}</td>
-        <td>
-          <p-tag
-            [value]="cupo.cumpleCorrelativas ? 'Sí' : 'No'"
-            [severity]="cupo.cumpleCorrelativas ? 'success' : 'warning'"
-            class="font-bold"
-          ></p-tag>
-        </td>
-      </tr>
-    </ng-template>
-  </p-table>
-</p-panel>

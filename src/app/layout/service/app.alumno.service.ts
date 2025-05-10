@@ -12,16 +12,18 @@ export class AlumnoService{
   API_URL="http://localhost:8080/"
   API_URL_CONSULTAR="/consultar?userInput="
   alumnos: Alumno[];
-  respuesta: WritableSignal<string | null>;
+  respuesta: WritableSignal<PedidoDeCupo[] | []>;
 
   constructor(private http: HttpClient) {
     this.alumnos= [];
-    this.respuesta = signal<string | null>(null);
+    this.respuesta = signal<PedidoDeCupo[] | []>([]);
 
   }
   getUser(){
     return this.http.get<Alumno[]>(this.API_URL)
   }
+
+  cuposAsignados: PedidoDeCupo[] = [];
 
   consultar(selectedFile: File | null): void {
     if (!selectedFile) {
@@ -30,27 +32,22 @@ export class AlumnoService{
     }
 
     const formData = new FormData();
-    formData.append('file', selectedFile); // debe llamarse 'file' para que coincida con el backend
+    formData.append('file', selectedFile);
 
-    this.http.post(`${this.API_URL}asistente/sugerencia-inscripcion-con-csv`, formData, {
-      responseType: 'text'
-    }).subscribe({
+    this.http.post<PedidoDeCupo[]>(`${this.API_URL}asistente/sugerencia-inscripcion-con-csv`, formData).subscribe({
       next: (response) => {
         this.respuesta.set(response);
-        console.log("Respuesta recibida:", response);
+        console.log("Respuesta recibida:", this.cuposAsignados);
       },
-      error: (error) => {
-        console.error("Error al consultar:", error);
-      },
-      complete: () => {
-        console.log("Consulta completada");
-      }
+      error: (error) => console.error("Error al consultar:", error),
+      complete: () => console.log("Consulta completada")
     });
   }
+
   consultarCsv(uploadedFiles: any) {
-    this.http.get(`${this.API_URL}/consultar?file=${uploadedFiles}`, { responseType: 'text' })
+    this.http.get<PedidoDeCupo[]>(`${this.API_URL}/consultar?file=${uploadedFiles}`, {})
       .subscribe({
-        next: (response) => {
+        next: (response ) => {
           this.respuesta.set(response);
           console.log("Respuesta recibida:", response);
         },

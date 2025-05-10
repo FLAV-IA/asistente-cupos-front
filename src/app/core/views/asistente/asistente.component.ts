@@ -13,12 +13,14 @@ import { PanelModule } from 'primeng/panel';
 import {Comision} from "../../domain/Comision";
 import { CardModule } from 'primeng/card';
 import { InputIconModule } from 'primeng/inputicon';
+import { ListboxModule } from 'primeng/listbox';
+
 import * as Papa from 'papaparse';
 
 @Component({
   selector: 'app-asistente',
   standalone: true,
-  imports:[FormsModule,CommonModule,FileUploadModule,InputTextareaModule,TableModule,KnobModule,ButtonModule,TagModule,PanelModule,CardModule,InputIconModule ],
+  imports:[FormsModule,CommonModule,FileUploadModule,InputTextareaModule,TableModule,KnobModule,ButtonModule,TagModule,PanelModule,CardModule,InputIconModule,ListboxModule],
   templateUrl: './asistente.component.html',
   styleUrl: './asistente.component.css'
 })
@@ -51,21 +53,19 @@ export class AsistenteComponent implements OnInit{
       const value = this.respuesta();
       if (value) {
         try {
-          this.loading=false
-
-          this.cuposAsignados = JSON.parse(value);
-
+          this.loading = false;
+          this.cuposAsignados = value as PedidoDeCupo[];
+          console.log("Cupos asignados:", this.cuposAsignados);
         } catch (e) {
-          console.error("Error al parsear la respuesta:", e);
+          console.error('Error al procesar la respuesta:', e);
         }
       }
     });
-
 }
 
   consultar() {
     this.loading=true
-    let pedidoDeCupos = this.alumService.consultar(this.selectedFile);
+    this.alumService.consultar(this.selectedFile);
   }
 
 
@@ -85,31 +85,24 @@ export class AsistenteComponent implements OnInit{
       Papa.parse(csv, {
         header: true,
         skipEmptyLines: true,
-        quoteChar: '"',        // asegura que respeta las comillas dobles
-        escapeChar: '"',       // correcto para CSV estándar
-        delimiter: ",",        // coma como delimitador
+        quoteChar: '"',
+        escapeChar: '"',
+        delimiter: "|", // Cambié el delimitador a |
         complete: (result) => {
-          this.datosCSV = result.data as any[];
+          // El resultado ya es un array de objetos con las columnas del CSV
+          this.datosCSV = result.data.map((row: any) => {
+            // Aseguramos que la columna "codigos_comisiones" se convierta en un array de códigos
+            return {
+              dni: row.dni,
+              codigosComisiones: row.codigos_comisiones ? row.codigos_comisiones.split(",") : [] // Convertimos la cadena a un array
+            };
+          });
           console.log("Datos parseados:", this.datosCSV);
         },
       });
     };
 
-    reader.readAsText(file, 'UTF-8'); // asegúrate de leer con la codificación correcta
-  }
-
-  parsearCSV(contenido: string): any[] {
-    const lineas = contenido.split('\n').filter(linea => linea.trim() !== '');
-    const headers = lineas[0].split(',').map(h => h.trim());
-
-    return lineas.slice(1).map(linea => {
-      const valores = linea.split(',').map(v => v.trim());
-      const obj: any = {};
-      headers.forEach((header, i) => {
-        obj[header] = valores[i];
-      });
-      return obj;
-    });
+    reader.readAsText(file, 'UTF-8');
   }
 
 
@@ -119,9 +112,14 @@ export class AsistenteComponent implements OnInit{
     }
     this.selectedFile = null;
     this.fileLoaded = false;
-    this.datosCSV = []; // limpia la tabla
+    this.datosCSV = [];
   }
 
 
-
+  formatCodigoList(codigos: string[]): { label: string, value: string }[] {
+    return codigos? codigos.map(codigo => ({
+      label: codigo,  // Esto es lo que se muestra en el listbox
+      value: codigo   // El valor asociado a cada opción
+    })):[];
+  }
 }
