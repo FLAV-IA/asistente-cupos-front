@@ -14,13 +14,15 @@ import {Comision} from "../../domain/Comision";
 import { CardModule } from 'primeng/card';
 import { InputIconModule } from 'primeng/inputicon';
 import { ListboxModule } from 'primeng/listbox';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
 
 import * as Papa from 'papaparse';
+import { IconFieldModule } from 'primeng/iconfield';
 
 @Component({
   selector: 'app-asistente',
   standalone: true,
-  imports:[FormsModule,CommonModule,FileUploadModule,InputTextareaModule,TableModule,KnobModule,ButtonModule,TagModule,PanelModule,CardModule,InputIconModule,ListboxModule],
+  imports:[FormsModule,CommonModule,FileUploadModule,InputTextareaModule,TableModule,KnobModule,ButtonModule,TagModule,PanelModule,CardModule,InputIconModule,ListboxModule,IconFieldModule,OverlayPanelModule],
   templateUrl: './asistente.component.html',
   styleUrl: './asistente.component.css'
 })
@@ -36,6 +38,7 @@ export class AsistenteComponent implements OnInit{
   fileLoaded = false;  // Estado de si el archivo fue cargado
   @ViewChild('fileUpload') fileUpload!: FileUpload;
   datosCSV: any[] = [];
+  ultimasConsultas: any[] = [];
 
 
   ngOnInit(){
@@ -121,5 +124,21 @@ export class AsistenteComponent implements OnInit{
       label: codigo,  // Esto es lo que se muestra en el listbox
       value: codigo   // El valor asociado a cada opción
     })):[];
+  }
+
+  agregarConsulta(cupo: any): void {
+    // Eliminar si ya existe (para evitar duplicados)
+    this.ultimasConsultas = this.ultimasConsultas.filter(c => c.dniEstudiante !== cupo.dniEstudiante);
+
+    // Insertar al principio
+    this.ultimasConsultas.unshift(cupo);
+
+    // Limitar a los últimos 10
+    if (this.ultimasConsultas.length > 10) {
+      this.ultimasConsultas.pop();
+    }
+  }
+  eliminarConsulta(index: number): void {
+    this.ultimasConsultas.splice(index, 1);
   }
 }

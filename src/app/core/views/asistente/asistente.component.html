@@ -1,12 +1,62 @@
 <div class="grid">
+  <div class="col-2">
+    <p-table
+      [value]="ultimasConsultas"
+      [responsiveLayout]="'scroll'"
+      class="p-datatable-sm p-datatable-striped"
+      [tableStyle]="{ 'min-width': '100%' }"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th>historia</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-item>
+        <tr>
+          <td>
+            <div style="min-width: 300px">
+              <h4>{{ item.historiaAcademica.dni }}</h4>
+              <div><strong>prioridad:</strong> {{ item.prioridad }}</div>
+              <div> <p-tag
+                [value]="item.cupoAsignado ? 'Sí' : 'No'"
+                [severity]="item.cupoAsignado ? 'success' : 'danger'"
+                class="font-bold"
+              ></p-tag></div>
 
-  <div [ngClass]="fileLoaded ? 'col-8' : 'col-12'">
+              <div><strong>Total Inscripciones:</strong> {{ item.historiaAcademica.totalInscripcionesHistoricas }}</div>
+              <div><strong>Total Aprobadas:</strong> {{ item.historiaAcademica.totalHistoricasAprobadas }}</div>
+              <div><strong>Coeficiente:</strong> {{ item.historiaAcademica.coeficiente }}</div>
+              <div><strong>Correlativas cumplidas:</strong> {{ item.historiaAcademica.cumpleCorrelativas ? 'Sí' : 'No' }}</div>
+              <div><strong>Cursadas anteriores:</strong> {{ item.historiaAcademica.codigosCursadasAnteriores.join(', ') }}</div>
+              <div><strong>Inscripciones actuales:</strong> {{ item.historiaAcademica.codigosInscripcionesActuales.join(', ') }}</div>
+              <button
+                pButton
+                icon="pi pi-trash"
+                class="p-button-danger p-button-sm mt-2"
+                (click)="eliminarConsulta(item)"
+                label="Eliminar"
+              ></button>
+            </div>
+          </td>
+
+
+
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+
+
+
+
+  <div [ngClass]="fileLoaded ? 'col-7' : 'col-8'">
     <h4 class="mb-3">Asistente de Inscripción</h4>
 
     <p-panel header="Consulta de Cupos" styleClass="mb-4 shadow-2 border-round-lg" [toggleable]="true">
       <form class="p-fluid px-4 py-2">
         <!-- Subida de archivo -->
-        <div class="mb-4">
+        <div class="mb-2">
           <label class="font-bold text-lg mb-2 block">Cargar CSV de Información de Alumnos:</label>
           <p-fileUpload
             #fileUpload
@@ -33,14 +83,22 @@
           <span class="text-md">No se ha cargado ningún archivo</span>
         </div>
 
-        <!-- Botón de borrar -->
-        <div class="flex justify-content-center mt-4">
+        <!-- Botones alineados horizontalmente -->
+        <div class="flex justify-content-center align-items-center gap-3 mt-3 flex-wrap">
           <p-button
             icon="pi pi-trash"
             label="Borrar archivo"
             severity="danger"
             class="p-button-rounded p-button-outlined"
             (click)="handleClear()"
+          ></p-button>
+
+          <p-button
+            icon="pi pi-search"
+            label="Consultar"
+            severity="success"
+            class="p-button-rounded p-button-raised shadow-2"
+            (click)="consultar()"
           ></p-button>
         </div>
 
@@ -50,41 +108,61 @@
           <span class="text-md text-primary font-medium">Procesando...</span>
         </div>
 
-        <!-- Botón de consulta -->
-        <div class="flex justify-content-center mt-4">
-          <p-button
-            icon="pi pi-search"
-            label="Consultar"
-            severity="success"
-            class="p-button-rounded p-button-raised shadow-2"
-            (click)="consultar()"
-          ></p-button>
-        </div>
       </form>
     </p-panel>
 
     <!-- Tabla de pedidos de cupos -->
     <p-table
+      #dt2
       [value]="cuposAsignados"
+      dataKey="id"
       [paginator]="true"
-      [rows]="10"
+      [rows]="50"
+      [rowsPerPageOptions]="[10, 25, 50]"
       [responsiveLayout]="'scroll'"
       class="p-datatable-gridlines p-datatable-striped"
       [tableStyle]="{ 'min-width': '100%' }"
+      [globalFilterFields]="['nombreEstudiante', 'dniEstudiante', 'codigoComision', 'motivo']"
     >
+
+
+      <!-- CABECERA -->
       <ng-template pTemplate="header">
         <tr>
-          <th>Estudiante</th>
-          <th>Comisión</th>
+          <th pSortableColumn="nombreEstudiante">Estudiante</th>
+          <th pSortableColumn="dniEstudiante">DNI</th>
+          <th pSortableColumn="codigoComision">Comisión</th>
           <th>Prioridad</th>
           <th>Asignado</th>
-          <th>Motivo</th>
+          <th pSortableColumn="motivo">Motivo</th>
+          <th>Historia Académica</th>
+        </tr>
+        <!-- FILTROS POR COLUMNA -->
+        <tr>
+          <th>
+            <p-columnFilter type="text" field="nombreEstudiante"  placeholder="Buscar estudiante"></p-columnFilter>
+
+          </th>
+          <th>
+            <p-columnFilter type="text" field="dniEstudiante"  placeholder="Buscar DNI"></p-columnFilter>
+          </th>
+          <th>
+            <p-columnFilter type="text" field="codigoComision"  placeholder="Buscar comisión"></p-columnFilter>
+          </th>
+          <th></th>
+          <th></th>
+          <th>
+            <p-columnFilter type="text" field="motivo"  placeholder="Buscar motivo"></p-columnFilter>
+          </th>
+          <th></th>
         </tr>
       </ng-template>
 
+      <!-- CUERPO -->
       <ng-template pTemplate="body" let-cupo>
         <tr>
           <td>{{ cupo.nombreEstudiante }}</td>
+          <td>{{ cupo.dniEstudiante }}</td>
           <td>{{ cupo.codigoComision }}</td>
           <td>
             <p-knob
@@ -105,15 +183,48 @@
             ></p-tag>
           </td>
           <td>{{ cupo.motivo }}</td>
+          <!-- CUERPO -->
+          <td>
+            <button
+              pButton
+              type="button"
+              icon="pi pi-eye"
+              label="Ver"
+              (click)="agregarConsulta(cupo);"
+              class="p-button-text p-button-sm"
+            ></button>
+            <p-overlayPanel #op>
+              <div style="min-width: 300px">
+                <h4>Historia Académica</h4>
+                <div><strong>Dni:</strong> {{ cupo.historiaAcademica.dni }}</div>
+                <div><strong>Total Inscripciones:</strong> {{ cupo.historiaAcademica.totalInscripcionesHistoricas }}</div>
+                <div><strong>Total Aprobadas:</strong> {{ cupo.historiaAcademica.totalHistoricasAprobadas }}</div>
+                <div><strong>Coeficiente:</strong> {{ cupo.historiaAcademica.coeficiente }}</div>
+                <div><strong>Correlativas cumplidas:</strong> {{ cupo.historiaAcademica.cumpleCorrelativas ? 'Sí' : 'No' }}</div>
+                <div><strong>Cursadas anteriores:</strong> {{ cupo.historiaAcademica.codigosCursadasAnteriores.join(', ') }}</div>
+                <div><strong>Inscripciones actuales:</strong> {{ cupo.historiaAcademica.codigosInscripcionesActuales.join(', ') }}</div>
+              </div>
+            </p-overlayPanel>
+          </td>
+
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="8">No se encontraron resultados.</td>
         </tr>
       </ng-template>
     </p-table>
+
   </div>
 
-  <div class="col-4">
+  <div class="col-3">
     <div *ngIf="datosCSV.length > 0">
-      <h4 class="mb-3">Previsualizacion de Pedidos</h4>
+      <h4 class="mb-3">Previsualización de Pedidos</h4>
+
       <p-table
+        #dt
         [value]="datosCSV"
         [paginator]="true"
         [rows]="15"
@@ -121,14 +232,26 @@
         [responsiveLayout]="'scroll'"
         class="p-datatable-sm p-datatable-striped p-datatable-hoverable-rows"
         [tableStyle]="{ 'min-width': '100%' }"
+        [globalFilterFields]="['dni', 'codigosComisiones']"
       >
+
+        <!-- Encabezado con filtros individuales -->
         <ng-template pTemplate="header">
+          <tr>
+            <th>
+              <p-columnFilter type="text" field="dni" placeholder="Filtrar DNI" ariaLabel="Filtrar por DNI" />
+            </th>
+            <th>
+              <p-columnFilter type="text" field="codigosComisiones" placeholder="Filtrar Comisiones" ariaLabel="Filtrar por Comisión" />
+            </th>
+          </tr>
           <tr>
             <th>DNI</th>
             <th>Comisiones</th>
           </tr>
         </ng-template>
 
+        <!-- Cuerpo -->
         <ng-template pTemplate="body" let-row>
           <tr>
             <td>
@@ -145,6 +268,12 @@
                 [virtualScrollItemSize]="5"
               ></p-listbox>
             </td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="2">No se encontraron registros.</td>
           </tr>
         </ng-template>
       </p-table>
