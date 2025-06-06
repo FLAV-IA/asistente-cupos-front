@@ -1,0 +1,115 @@
+<p-table
+  [value]="sugerenciasDeInscripcion"
+  dataKey="id"
+  [paginator]="true"
+  [rows]="50"
+  [rowsPerPageOptions]="[10, 25, 50]"
+  [responsiveLayout]="'scroll'"
+  class="p-datatable-gridlines p-datatable-striped"
+  [tableStyle]="{ 'min-width': '100%' }"
+>
+  <ng-template pTemplate="header">
+    <tr>
+      <th pSortableColumn="nombreEstudiante">Estudiante</th>
+      <th pSortableColumn="dniEstudiante">DNI</th>
+      <th pSortableColumn="codigoComision">Comisión</th>
+      <th>Prioridad</th>
+      <th pSortableColumn="cupoAsignado">Asignado</th>
+      <th pSortableColumn="motivo">Motivo</th>
+      <th>Historia Académica</th>
+    </tr>
+    <tr>
+      <th>
+        <p-columnFilter
+          type="text"
+          field="nombreEstudiante"
+          placeholder="Buscar estudiante"
+        ></p-columnFilter>
+      </th>
+      <th>
+        <p-columnFilter
+          type="text"
+          field="dniEstudiante"
+          placeholder="Buscar DNI"
+        ></p-columnFilter>
+      </th>
+      <th>
+        <p-columnFilter
+          type="text"
+          field="codigoComision"
+          placeholder="Buscar comisión"
+        ></p-columnFilter>
+      </th>
+      <th></th>
+      <th><p-columnFilter
+        type="boolean"
+        field="cupoAsignado"
+        placeholder="cupoAsignado"
+      ></p-columnFilter></th>
+
+      <th>
+        <p-columnFilter
+          type="text"
+          field="motivo"
+          placeholder="Buscar motivo"
+        ></p-columnFilter>
+      </th>
+      <th></th>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="body" let-cupo>
+    <tr>
+      <td>{{ cupo.nombreEstudiante }}</td>
+      <td>{{ cupo.dniEstudiante }}</td>
+      <td>{{ cupo.codigoComision }}</td>
+      <td>
+        <p-knob
+          [ngModel]="cupo.prioridad"
+          [min]="0"
+          [max]="100"
+          [readonly]="true"
+          [size]="50"
+          [valueColor]="'#22C55E'"
+          [rangeColor]="'#D1FAE5'"
+        ></p-knob>
+      </td>
+      <td>
+        <p-tag
+          [value]="cupo.cupoAsignado ? 'Sí' : 'No'"
+          [severity]="cupo.cupoAsignado ? 'success' : 'danger'"
+          class="font-bold"
+        ></p-tag>
+      </td>
+      <td>{{ cupo.motivo }}</td>
+      <td>
+        <button
+          pButton
+          type="button"
+          icon="pi pi-eye"
+          label="Ver"
+          (click)="agregarConsulta(cupo)"
+          class="p-button-text p-button-sm"
+        ></button>
+        <p-overlayPanel #op>
+          <div style="min-width: 300px">
+            <h4>Historia Académica</h4>
+            <div><strong>Dni:</strong> {{ cupo.historiaAcademica.dni }}</div>
+            <div><strong>Total Inscripciones:</strong> {{ cupo.historiaAcademica.totalInscripcionesHistoricas }}</div>
+            <div><strong>Total Aprobadas:</strong> {{ cupo.historiaAcademica.totalHistoricasAprobadas }}</div>
+            <div><strong>Coeficiente:</strong> {{ cupo.historiaAcademica.coeficiente }}</div>
+            <div><strong>Correlativas cumplidas:</strong> {{ cupo.historiaAcademica.cumpleCorrelativas ? 'Sí' : 'No' }}</div>
+            <div><strong>Cursadas anteriores:</strong> {{ cupo.historiaAcademica.codigosCursadasAnteriores.join(', ') }}</div>
+            <div><strong>Inscripciones actuales:</strong> {{ cupo.historiaAcademica.codigosInscripcionesActuales.join(', ') }}</div>
+          </div>
+        </p-overlayPanel>
+      </td>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td colspan="8">No se encontraron resultados.</td>
+    </tr>
+  </ng-template>
+</p-table>

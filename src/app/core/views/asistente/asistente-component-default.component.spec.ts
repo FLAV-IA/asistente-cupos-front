@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AsistenteComponent } from './asistente.component';
+import { AsistenteComponentDefault } from './asistente-component-default.component';
 
 describe('MypageComponent', () => {
-  let component: AsistenteComponent;
-  let fixture: ComponentFixture<AsistenteComponent>;
+  let component: AsistenteComponentDefault;
+  let fixture: ComponentFixture<AsistenteComponentDefault>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AsistenteComponent]
+      imports: [AsistenteComponentDefault]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(AsistenteComponent);
+    fixture = TestBed.createComponent(AsistenteComponentDefault);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

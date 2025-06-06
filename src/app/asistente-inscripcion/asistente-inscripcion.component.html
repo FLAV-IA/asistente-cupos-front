@@ -1,0 +1,32 @@
+<div class="grid">
+  <div class="col-2">
+    <historia-academica-list
+      [historiaAcademicaList]="historiaAcademicaList"
+      (eliminarHistoria)="eliminarHistoriaAcademica($event)"
+    ></historia-academica-list>
+  </div>
+
+  <div [ngClass]="fueCargadoElArchivo ? 'col-7' : 'col-8'">
+    <h4 class="mb-3">Asistente de Inscripción</h4>
+
+    <asistente-panel
+    (archivoCargadoEvent)="filePeticiones = $event"
+    (sugerenciasDeInscripcionEvent)="sugerenciasDeInscripcion = $event"
+    ></asistente-panel>
+
+    <tabla-sugerencia-inscripcion
+      [sugerenciasDeInscripcion]="sugerenciasDeInscripcion"
+      (verHistoria)="agregarHistoriaAcademica($event)"
+    ></tabla-sugerencia-inscripcion>
+  </div>
+
+  <div class="col-3">
+  <previsualizador-peticiones-component
+    [archivoPeticiones]="filePeticiones"
+    (previsualizacionEvent)="fueCargadoElArchivo = $event"
+  >
+  </previsualizador-peticiones-component>
+  </div>
+
+
+</div>

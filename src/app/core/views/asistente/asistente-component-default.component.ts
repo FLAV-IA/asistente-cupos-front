@@ -1,12 +1,12 @@
 import {Component, effect, inject, OnInit, ViewChild} from '@angular/core';
 import { ButtonModule } from 'primeng/button';
-import {AlumnoService} from "../../../layout/service/app.alumno.service";
+import {AlumnoService} from "../../service/asistenteDeCupos.service";
 import {FormBuilder, FormsModule} from "@angular/forms";
 import {CommonModule} from "@angular/common";
 import {FileUpload, FileUploadModule} from 'primeng/fileupload';
 import { InputTextareaModule  } from 'primeng/inputtextarea';
 import { TableModule } from 'primeng/table';
-import {PedidoDeCupo} from "../../domain/PedidoDeCupo";
+import {SugerenciaDeInscripcion} from "../../domain/SugerenciaDeInscripcion";
 import { KnobModule } from 'primeng/knob';
 import { TagModule } from 'primeng/tag';
 import { PanelModule } from 'primeng/panel';
@@ -23,16 +23,15 @@ import { IconFieldModule } from 'primeng/iconfield';
   selector: 'app-asistente',
   standalone: true,
   imports:[FormsModule,CommonModule,FileUploadModule,InputTextareaModule,TableModule,KnobModule,ButtonModule,TagModule,PanelModule,CardModule,InputIconModule,ListboxModule,IconFieldModule,OverlayPanelModule],
-  templateUrl: './asistente.component.html',
-  styleUrl: './asistente.component.css'
+  templateUrl: './asistente-component-default.component.html',
 })
-export class AsistenteComponent implements OnInit{
+export class AsistenteComponentDefault implements OnInit{
   consulta: string = '';
   private alumService = inject(AlumnoService);
-  respuesta = this.alumService.respuesta; // Vinculamos el signal
+  respuesta = this.alumService.cuposSugeridos$; // Vinculamos el signal
   uploadedFiles: any;
   infoAlumnos: any;
-  cuposAsignados: PedidoDeCupo[]=[];
+  cuposAsignados: SugerenciaDeInscripcion[]=[];
   comisiones: Comision[] = [];
   selectedFile: File | null = null;
   fileLoaded = false;  // Estado de si el archivo fue cargado
@@ -57,7 +56,7 @@ export class AsistenteComponent implements OnInit{
       if (value) {
         try {
           this.loading = false;
-          this.cuposAsignados = value as PedidoDeCupo[];
+          this.cuposAsignados = value as SugerenciaDeInscripcion[];
           console.log("Cupos asignados:", this.cuposAsignados);
         } catch (e) {
           console.error('Error al procesar la respuesta:', e);
@@ -68,7 +67,7 @@ export class AsistenteComponent implements OnInit{
 
   consultar() {
     this.loading=true
-    this.alumService.consultar(this.selectedFile);
+    this.alumService.consultarConArchivo(this.selectedFile);
   }
 
 

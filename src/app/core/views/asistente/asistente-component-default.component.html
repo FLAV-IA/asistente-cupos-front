@@ -122,7 +122,7 @@
       [responsiveLayout]="'scroll'"
       class="p-datatable-gridlines p-datatable-striped"
       [tableStyle]="{ 'min-width': '100%' }"
-      [globalFilterFields]="['nombreEstudiante', 'dniEstudiante', 'codigoComision', 'motivo']"
+      [globalFilterFields]="['nombreEstudiante', 'dniEstudiante', 'codigoComision', 'motivo','asignado']"
     >
 
 
@@ -133,7 +133,7 @@
           <th pSortableColumn="dniEstudiante">DNI</th>
           <th pSortableColumn="codigoComision">Comisión</th>
           <th>Prioridad</th>
-          <th>Asignado</th>
+          <th pSortableColumn="cupoAsignado">Asignado</th>
           <th pSortableColumn="motivo">Motivo</th>
           <th>Historia Académica</th>
         </tr>
@@ -150,7 +150,10 @@
             <p-columnFilter type="text" field="codigoComision"  placeholder="Buscar comisión"></p-columnFilter>
           </th>
           <th></th>
-          <th></th>
+          <th>
+            <p-columnFilter type="text" field="cupoAsignado"  placeholder="Buscar estado asignacion"></p-columnFilter>
+
+          </th>
           <th>
             <p-columnFilter type="text" field="motivo"  placeholder="Buscar motivo"></p-columnFilter>
           </th>
