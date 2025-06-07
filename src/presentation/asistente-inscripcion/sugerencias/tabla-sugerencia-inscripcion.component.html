@@ -41,11 +41,13 @@
         ></p-columnFilter>
       </th>
       <th></th>
-      <th><p-columnFilter
-        type="boolean"
-        field="cupoAsignado"
-        placeholder="cupoAsignado"
-      ></p-columnFilter></th>
+      <th>
+        <p-columnFilter
+          type="boolean"
+          field="cupoAsignado"
+          placeholder="cupoAsignado"
+        ></p-columnFilter>
+      </th>
 
       <th>
         <p-columnFilter
@@ -95,12 +97,32 @@
           <div style="min-width: 300px">
             <h4>Historia Académica</h4>
             <div><strong>Dni:</strong> {{ cupo.historiaAcademica.dni }}</div>
-            <div><strong>Total Inscripciones:</strong> {{ cupo.historiaAcademica.totalInscripcionesHistoricas }}</div>
-            <div><strong>Total Aprobadas:</strong> {{ cupo.historiaAcademica.totalHistoricasAprobadas }}</div>
-            <div><strong>Coeficiente:</strong> {{ cupo.historiaAcademica.coeficiente }}</div>
-            <div><strong>Correlativas cumplidas:</strong> {{ cupo.historiaAcademica.cumpleCorrelativas ? 'Sí' : 'No' }}</div>
-            <div><strong>Cursadas anteriores:</strong> {{ cupo.historiaAcademica.codigosCursadasAnteriores.join(', ') }}</div>
-            <div><strong>Inscripciones actuales:</strong> {{ cupo.historiaAcademica.codigosInscripcionesActuales.join(', ') }}</div>
+            <div>
+              <strong>Total Inscripciones:</strong>
+              {{ cupo.historiaAcademica.totalInscripcionesHistoricas }}
+            </div>
+            <div>
+              <strong>Total Aprobadas:</strong>
+              {{ cupo.historiaAcademica.totalHistoricasAprobadas }}
+            </div>
+            <div>
+              <strong>Coeficiente:</strong>
+              {{ cupo.historiaAcademica.coeficiente }}
+            </div>
+            <div>
+              <strong>Correlativas cumplidas:</strong>
+              {{ cupo.historiaAcademica.cumpleCorrelativas ? 'Sí' : 'No' }}
+            </div>
+            <div>
+              <strong>Cursadas anteriores:</strong>
+              {{ cupo.historiaAcademica.codigosCursadasAnteriores.join(', ') }}
+            </div>
+            <div>
+              <strong>Inscripciones actuales:</strong>
+              {{
+                cupo.historiaAcademica.codigosInscripcionesActuales.join(', ')
+              }}
+            </div>
           </div>
         </p-overlayPanel>
       </td>

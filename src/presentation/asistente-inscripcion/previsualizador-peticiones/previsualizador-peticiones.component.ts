@@ -9,12 +9,7 @@ import * as Papa from 'papaparse';
   selector: 'previsualizador-peticiones-component',
   templateUrl: './previsualizador-peticiones.component.html',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    TableModule,
-    ListboxModule
-  ],
+  imports: [CommonModule, FormsModule, TableModule, ListboxModule],
 })
 export class PrevisualizadorPeticionesComponent {
   peticionesParseadas: any[] = [];
@@ -32,7 +27,9 @@ export class PrevisualizadorPeticionesComponent {
   }
 
   formatCodigoList(codigos: string[]): { label: string; value: string }[] {
-    return codigos ? codigos.map(codigo => ({ label: codigo, value: codigo })) : [];
+    return codigos
+      ? codigos.map((codigo) => ({ label: codigo, value: codigo }))
+      : [];
   }
 
   private parsearArchivo(file: File): void {
@@ -47,7 +44,9 @@ export class PrevisualizadorPeticionesComponent {
         escapeChar: '"',
         delimiter: '|',
         complete: (result) => {
-          this.peticionesParseadas = result.data.map(row => this.parsearPeticion(row));
+          this.peticionesParseadas = result.data.map((row) =>
+            this.parsearPeticion(row),
+          );
           this.previsualizacionEvent.emit(this.peticionesParseadas.length > 0);
         },
       });
@@ -55,12 +54,15 @@ export class PrevisualizadorPeticionesComponent {
     reader.readAsText(file, 'UTF-8');
   }
 
-
-  private parsearPeticion(row: any): { dni: string; codigosComisiones: string[] } {
+  private parsearPeticion(row: any): {
+    dni: string;
+    codigosComisiones: string[];
+  } {
     return {
       dni: row.dni,
-      codigosComisiones: row.codigos_comisiones ? row.codigos_comisiones.split(',') : [],
+      codigosComisiones: row.codigos_comisiones
+        ? row.codigos_comisiones.split(',')
+        : [],
     };
   }
-
 }

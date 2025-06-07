@@ -4,7 +4,7 @@ export class Comision {
     public materia: string = '',
     public horario: string = '',
     public inscriptos: number = 0,
-    public cuposTotales: number = 0
+    public cuposTotales: number = 0,
   ) {}
 
   get cuposDisponibles(): number {

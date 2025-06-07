@@ -2,7 +2,10 @@
   <ng-template pTemplate="content">
     <h5 class="text-secondary">{{ comision.materia }}</h5>
     <p><strong>Horario:</strong> {{ comision.horario }}</p>
-    <p><strong>Cupos disponibles:</strong> {{ comision.cuposDisponibles }} / {{ comision.cuposTotales }}</p>
+    <p>
+      <strong>Cupos disponibles:</strong> {{ comision.cuposDisponibles }} /
+      {{ comision.cuposTotales }}
+    </p>
     <p-progressBar
       [value]="(comision.cuposDisponibles / comision.cuposTotales) * 100"
       [showValue]="false"

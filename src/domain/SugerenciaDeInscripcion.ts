@@ -9,6 +9,6 @@ export class SugerenciaDeInscripcion {
     public prioridad?: number,
     public cupoAsignado?: boolean,
     public motivo?: string,
-    public historiaAcademica?: HistoriaAcademica
+    public historiaAcademica?: HistoriaAcademica,
   ) {}
 }
