@@ -21,22 +21,22 @@
         (clearHandler)="limpiarArchivo()"
         styleClass="p-button-outlined p-button-info w-full"
       ></p-fileUpload>
+      <div *ngIf="mensajeError" class="text-red-500 mt-2">
+        {{ mensajeError }}
+      </div>
     </div>
 
     <div
-      *ngIf="archivoCargado"
+      *ngIf="archivoCargado && !mensajeError"
       class="flex align-items-center gap-2 text-green-600 mb-2"
     >
       <i class="pi pi-check-circle text-xl"></i>
       <span class="text-md">Archivo cargado correctamente</span>
     </div>
     <div
-      *ngIf="!archivoCargado"
+      *ngIf="!archivoCargado && !mensajeError"
       class="flex align-items-center gap-2 text-red-500 mb-2"
-    >
-      <i class="pi pi-times-circle text-xl"></i>
-      <span class="text-md">No se ha cargado ningún archivo</span>
-    </div>
+    ></div>
 
     <div
       class="flex justify-content-center align-items-center gap-3 mt-3 flex-wrap"

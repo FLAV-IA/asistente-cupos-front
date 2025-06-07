@@ -2,6 +2,7 @@ import { Injectable, signal, WritableSignal } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
 import { SugerenciaDeInscripcion } from '../../domain/SugerenciaDeInscripcion'
 import { environment } from '../../environments/environment'
+import { LoggingService } from './logging.service'
 
 @Injectable({
   providedIn: 'root',
@@ -15,7 +16,7 @@ export class AsistenteService {
     signal<SugerenciaDeInscripcion[]>([])
   private readonly _loading = signal(false)
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private logger: LoggingService) {}
 
   // Accesores de solo lectura para el componente
   readonly cuposSugeridos$ = this._cuposSugeridos.asReadonly()
@@ -23,7 +24,7 @@ export class AsistenteService {
 
   consultarConArchivo(file: File | null): void {
     if (!file) {
-      console.error('No hay archivo seleccionado')
+      this.logger.error('No hay archivo seleccionado')
       return
     }
 
@@ -39,15 +40,15 @@ export class AsistenteService {
       .subscribe({
         next: (response) => {
           this._cuposSugeridos.set(response ?? [])
-          console.log('Respuesta recibida:', response)
+          this.logger.log('Respuesta recibida:', response)
         },
         error: (error) => {
-          console.error('Error al consultar:', error)
+          this.logger.error('Error al consultar:', error)
           this._cuposSugeridos.set([])
         },
         complete: () => {
           this._loading.set(false)
-          console.log('Consulta completada')
+          this.logger.log('Consulta completada')
         },
       })
   }
