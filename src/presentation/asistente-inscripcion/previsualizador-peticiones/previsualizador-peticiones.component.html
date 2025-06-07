@@ -1,3 +1,7 @@
+<div *ngIf="errorMensaje" class="text-red-500 mb-3">
+  {{ errorMensaje }}
+</div>
+
 <div *ngIf="peticionesParseadas.length > 0">
   <h4 class="mb-3">Previsualización de Pedidos</h4>
 
