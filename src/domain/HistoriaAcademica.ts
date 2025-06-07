@@ -6,6 +6,6 @@ export class HistoriaAcademica {
     public coeficiente: number,
     public cumpleCorrelativas: boolean,
     public codigosCursadasAnteriores: string[],
-    public codigosInscripcionesActuales: string[]
+    public codigosInscripcionesActuales: string[],
   ) {}
 }

@@ -15,32 +15,32 @@ import { RouterModule } from '@angular/router';
 import { AppTopBarComponent } from './component/app.topbar.component';
 import { AppFooterComponent } from './component/app.footer.component';
 import { AppConfigModule } from '../config/config.module';
-import { AppSidebarComponent } from "./component/app.sidebar.component";
-import { AppLayoutComponent } from "./app.layout.component";
+import { AppSidebarComponent } from './component/app.sidebar.component';
+import { AppLayoutComponent } from './app.layout.component';
 import { CommonModule } from '@angular/common';
 
 @NgModule({
-    declarations: [
-        AppMenuitemComponent,
-        AppTopBarComponent,
-        AppFooterComponent,
-        AppMenuComponent,
-        AppSidebarComponent,
-        AppLayoutComponent,
-    ],
-    imports: [
-        CommonModule,
-        FormsModule,
-        HttpClientModule,
-        InputTextModule,
-        SidebarModule,
-        BadgeModule,
-        RadioButtonModule,
-        InputSwitchModule,
-        RippleModule,
-        RouterModule,
-        AppConfigModule
-    ],
-    exports: [AppLayoutComponent]
+  declarations: [
+    AppMenuitemComponent,
+    AppTopBarComponent,
+    AppFooterComponent,
+    AppMenuComponent,
+    AppSidebarComponent,
+    AppLayoutComponent,
+  ],
+  imports: [
+    CommonModule,
+    FormsModule,
+    HttpClientModule,
+    InputTextModule,
+    SidebarModule,
+    BadgeModule,
+    RadioButtonModule,
+    InputSwitchModule,
+    RippleModule,
+    RouterModule,
+    AppConfigModule,
+  ],
+  exports: [AppLayoutComponent],
 })
-export class AppLayoutModule { }
+export class AppLayoutModule {}

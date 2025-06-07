@@ -4,7 +4,7 @@ import {
   EventEmitter,
   ViewChild,
   inject,
-  effect
+  effect,
 } from '@angular/core';
 import { FileUpload, FileUploadModule } from 'primeng/fileupload';
 import { FormsModule } from '@angular/forms';
@@ -22,8 +22,8 @@ import { AsistenteService } from '../../../application/service/asistente.service
     CommonModule,
     FileUploadModule,
     PanelModule,
-    ButtonModule
-  ]
+    ButtonModule,
+  ],
 })
 export class AsistentePanelComponent {
   private readonly asistenteService = inject(AsistenteService);

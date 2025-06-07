@@ -1,18 +1,42 @@
-<p-table [value]="historiaAcademicaList" [responsiveLayout]="'scroll'" class="p-datatable-sm p-datatable-striped" [tableStyle]="{ 'min-width': '100%' }">
+<p-table
+  [value]="historiaAcademicaList"
+  [responsiveLayout]="'scroll'"
+  class="p-datatable-sm p-datatable-striped"
+  [tableStyle]="{ 'min-width': '100%' }"
+>
   <ng-template pTemplate="header">
-    <tr><th>Historia Académica</th></tr>
+    <tr>
+      <th>Historia Académica</th>
+    </tr>
   </ng-template>
   <ng-template pTemplate="body" let-historiaAcademica>
     <tr>
       <td>
         <div style="min-width: 300px">
           <h4>{{ historiaAcademica.dni }}</h4>
-          <div><strong>Total Inscripciones:</strong> {{ historiaAcademica.totalInscripcionesHistoricas }}</div>
-          <div><strong>Total Aprobadas:</strong> {{ historiaAcademica.totalHistoricasAprobadas }}</div>
-          <div><strong>Coeficiente:</strong> {{ historiaAcademica.coeficiente }}</div>
-          <div><strong>Correlativas cumplidas:</strong> {{ historiaAcademica.cumpleCorrelativas ? 'Sí' : 'No' }}</div>
-          <div><strong>Cursadas anteriores:</strong> {{ historiaAcademica.codigosCursadasAnteriores?.join(', ') }}</div>
-          <div><strong>Inscripciones actuales:</strong> {{ historiaAcademica.codigosInscripcionesActuales?.join(', ') }}</div>
+          <div>
+            <strong>Total Inscripciones:</strong>
+            {{ historiaAcademica.totalInscripcionesHistoricas }}
+          </div>
+          <div>
+            <strong>Total Aprobadas:</strong>
+            {{ historiaAcademica.totalHistoricasAprobadas }}
+          </div>
+          <div>
+            <strong>Coeficiente:</strong> {{ historiaAcademica.coeficiente }}
+          </div>
+          <div>
+            <strong>Correlativas cumplidas:</strong>
+            {{ historiaAcademica.cumpleCorrelativas ? 'Sí' : 'No' }}
+          </div>
+          <div>
+            <strong>Cursadas anteriores:</strong>
+            {{ historiaAcademica.codigosCursadasAnteriores?.join(', ') }}
+          </div>
+          <div>
+            <strong>Inscripciones actuales:</strong>
+            {{ historiaAcademica.codigosInscripcionesActuales?.join(', ') }}
+          </div>
           <button
             pButton
             icon="pi pi-trash"

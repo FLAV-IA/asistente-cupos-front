@@ -10,8 +10,8 @@
     <h4 class="mb-3">Asistente de Inscripción</h4>
 
     <asistente-panel
-    (archivoCargadoEvent)="filePeticiones = $event"
-    (sugerenciasDeInscripcionEvent)="sugerenciasDeInscripcion = $event"
+      (archivoCargadoEvent)="filePeticiones = $event"
+      (sugerenciasDeInscripcionEvent)="sugerenciasDeInscripcion = $event"
     ></asistente-panel>
 
     <tabla-sugerencia-inscripcion
@@ -21,12 +21,10 @@
   </div>
 
   <div class="col-3">
-  <previsualizador-peticiones-component
-    [archivoPeticiones]="filePeticiones"
-    (previsualizacionEvent)="fueCargadoElArchivo = $event"
-  >
-  </previsualizador-peticiones-component>
+    <previsualizador-peticiones-component
+      [archivoPeticiones]="filePeticiones"
+      (previsualizacionEvent)="fueCargadoElArchivo = $event"
+    >
+    </previsualizador-peticiones-component>
   </div>
-
-
 </div>
