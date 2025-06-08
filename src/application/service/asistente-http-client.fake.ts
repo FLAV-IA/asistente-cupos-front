@@ -36,8 +36,3 @@ export class AsistenteHttpClientFake implements AsistenteHttpClientPort {
     return of(data).pipe(delay(3000))
   }
 }
-
-export const ASISTENTE_HTTP_CLIENT_FAKE_PROVIDER = {
-  provide: ASISTENTE_HTTP_CLIENT,
-  useClass: AsistenteHttpClientFake,
-}
