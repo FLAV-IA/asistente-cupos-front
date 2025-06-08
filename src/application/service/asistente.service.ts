@@ -1,22 +1,24 @@
-import { Injectable, signal, WritableSignal } from '@angular/core'
-import { HttpClient } from '@angular/common/http'
+import { Injectable, signal, WritableSignal, Inject } from '@angular/core'
 import { SugerenciaDeInscripcion } from '../../domain/SugerenciaDeInscripcion'
-import { environment } from '../../environments/environment'
 import { LoggingService } from './logging.service'
+import {
+  ASISTENTE_HTTP_CLIENT,
+  AsistenteHttpClientPort,
+} from './asistente-http-client.port'
 
 @Injectable({
   providedIn: 'root',
 })
 export class AsistenteService {
-  private readonly BASE_URL = environment.apiBaseUrl
-  private readonly CONSULTAR_ENDPOINT =
-    'asistente/sugerencia-inscripcion-con-csv'
-
+  
   private readonly _cuposSugeridos: WritableSignal<SugerenciaDeInscripcion[]> =
     signal<SugerenciaDeInscripcion[]>([])
   private readonly _loading = signal(false)
 
-  constructor(private http: HttpClient, private logger: LoggingService) {}
+  constructor(
+    @Inject(ASISTENTE_HTTP_CLIENT) private http: AsistenteHttpClientPort,
+    private logger: LoggingService,
+  ) {}
 
   // Accesores de solo lectura para el componente
   readonly cuposSugeridos$ = this._cuposSugeridos.asReadonly()
@@ -28,16 +30,9 @@ export class AsistenteService {
       return
     }
 
-    const formData = new FormData()
-    formData.append('file', file)
-
     this._loading.set(true)
 
-    this.http
-      .post<
-        SugerenciaDeInscripcion[]
-      >(`${this.BASE_URL}${this.CONSULTAR_ENDPOINT}`, formData)
-      .subscribe({
+    this.http.postConsultar(file).subscribe({
         next: (response) => {
           this._cuposSugeridos.set(response ?? [])
           this.logger.log('Respuesta recibida:', response)
