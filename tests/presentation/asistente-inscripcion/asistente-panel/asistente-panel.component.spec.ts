@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing'
-import { HttpClientTestingModule } from '@angular/common/http/testing'
 import { AsistentePanelComponent } from '../../../../src/presentation/asistente-inscripcion/asistente-panel/asistente-panel.component'
 import { AsistenteService } from '../../../../src/application/service/asistente.service'
 import { LoggingService } from '../../../../src/application/service/logging.service'
@@ -24,7 +23,7 @@ describe('AsistentePanelComponent', () => {
     logger = { error: jest.fn(), log: jest.fn() }
 
     TestBed.configureTestingModule({
-      imports: [AsistentePanelComponent, HttpClientTestingModule],
+      imports: [AsistentePanelComponent],
       providers: [
         { provide: AsistenteService, useValue: service },
         { provide: LoggingService, useValue: logger },

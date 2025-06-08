@@ -1,17 +1,33 @@
 import { TestBed } from '@angular/core/testing'
 import { PrevisualizadorPeticionesComponent } from '../../../../src/presentation/asistente-inscripcion/previsualizador-peticiones/previsualizador-peticiones.component'
 import { LoggingService } from '../../../../src/application/service/logging.service'
-import { EventEmitter } from '@angular/core'
+import { CsvService } from '../../../../src/application/service/csv.service'
+import { EventEmitter, signal } from '@angular/core'
 
 describe('PrevisualizadorPeticionesComponent', () => {
   let component: PrevisualizadorPeticionesComponent
   let logger: { error: jest.Mock; log: jest.Mock }
+  let csvService: {
+    previsualizarCsv: jest.Mock
+    limpiarPrevisualizacion: jest.Mock
+    previewData$: any
+    loading: any
+  }
 
   beforeEach(() => {
     logger = { error: jest.fn(), log: jest.fn() }
+    csvService = {
+      previsualizarCsv: jest.fn(),
+      limpiarPrevisualizacion: jest.fn(),
+      previewData$: signal([]),
+      loading: signal(false),
+    }
     TestBed.configureTestingModule({
       imports: [PrevisualizadorPeticionesComponent],
-      providers: [{ provide: LoggingService, useValue: logger }],
+      providers: [
+        { provide: LoggingService, useValue: logger },
+        { provide: CsvService, useValue: csvService },
+      ],
     }).compileComponents()
 
     component = TestBed.createComponent(
@@ -24,33 +40,16 @@ describe('PrevisualizadorPeticionesComponent', () => {
   it('al asignar null al archivo se limpia la previsualización', () => {
     component.archivoPeticiones = null
 
-    expect(component.peticionesParseadas).toEqual([])
+    expect(csvService.limpiarPrevisualizacion).toHaveBeenCalled()
     expect(component.previsualizacionEvent.emit).toHaveBeenCalledWith(false)
   })
 
-  it('debe parsear archivo CSV correctamente', () => {
-    const csvContent = 'dni|codigos_comisiones\n123|A,B'
-    const file = new File([csvContent], 'peticiones.csv', { type: 'text/csv' })
-
-    const mockFileReader = {
-      result: csvContent,
-      onload: null as (() => void) | null,
-      onerror: null as (() => void) | null,
-      readAsText: jest.fn(function () {
-        if (this.onload) this.onload()
-      }),
-    }
-    ;(global as any).FileReader = jest.fn(() => mockFileReader)
+  it('debe enviar archivo al servicio al asignarlo', () => {
+    const file = new File(['a'], 'peticiones.csv')
 
     component.archivoPeticiones = file
 
-    expect(mockFileReader.readAsText).toHaveBeenCalled()
-    expect(component.peticionesParseadas.length).toBe(1)
-    expect(component.peticionesParseadas[0]).toEqual({
-      dni: '123',
-      codigosComisiones: ['A', 'B'],
-    })
-    expect(component.previsualizacionEvent.emit).toHaveBeenCalledWith(true)
+    expect(csvService.previsualizarCsv).toHaveBeenCalledWith(file)
   })
 
   it('formatCodigoList debe formatear correctamente', () => {
