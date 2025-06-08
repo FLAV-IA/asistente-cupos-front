@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { delay } from 'rxjs/operators';
-import { CsvHttpClientPort, CSV_HTTP_CLIENT } from './csv-http-client.port';
-import { EnrichedCsvRow } from '../../domain/EnrichedCsvRow';
+import { Injectable } from '@angular/core'
+import { Observable, of } from 'rxjs'
+import { delay } from 'rxjs/operators'
+import { CsvHttpClientPort, CSV_HTTP_CLIENT } from './csv-http-client.port'
+import { EnrichedCsvRow } from '../../domain/EnrichedCsvRow'
 
 @Injectable({ providedIn: 'root' })
 export class CsvHttpClientFake implements CsvHttpClientPort {
@@ -20,12 +20,7 @@ export class CsvHttpClientFake implements CsvHttpClientPort {
         materia: 'Física I',
         comisiones: ['F1'],
       },
-    ];
-    return of(rows).pipe(delay(3000));
+    ]
+    return of(rows).pipe(delay(3000))
   }
 }
-
-export const CSV_HTTP_CLIENT_FAKE_PROVIDER = {
-  provide: CSV_HTTP_CLIENT,
-  useClass: CsvHttpClientFake,
-};

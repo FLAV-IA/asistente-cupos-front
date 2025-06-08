@@ -48,6 +48,14 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
+            },
+            "mock": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.mock.ts"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -60,6 +68,9 @@
             },
             "development": {
               "buildTarget": "primeng-sakai:build:development"
+            },
+            "mock": {
+              "buildTarget": "primeng-sakai:build:mock"
             }
           },
           "defaultConfiguration": "development"
