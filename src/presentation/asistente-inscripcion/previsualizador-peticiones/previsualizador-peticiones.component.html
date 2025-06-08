@@ -2,18 +2,22 @@
   {{ errorMensaje }}
 </div>
 
-<div *ngIf="peticionesParseadas.length > 0">
+<div *ngIf="loading()" class="flex justify-content-center my-3">
+  <i class="pi pi-spin pi-spinner text-2xl"></i>
+</div>
+
+<div *ngIf="datosEnriquecidos().length > 0">
   <h4 class="mb-3">Previsualización de Pedidos</h4>
 
   <p-table
     #dt
-    [value]="peticionesParseadas"
+    [value]="datosEnriquecidos()"
     [paginator]="true"
     [rows]="15"
     [rowsPerPageOptions]="[5, 10, 15, 20]"
     [responsiveLayout]="'scroll'"
     [tableStyle]="{ 'min-width': '100%' }"
-    [globalFilterFields]="['dni', 'codigosComisiones']"
+    [globalFilterFields]="['dni', 'nombre', 'materia']"
     class="p-datatable-sm p-datatable-striped p-datatable-hoverable-rows"
   >
     <!-- Filtros -->
@@ -40,17 +44,20 @@
       </tr>
       <tr>
         <th>DNI</th>
+        <th>Nombre</th>
+        <th>Materia</th>
         <th>Comisiones</th>
       </tr>
     </ng-template>
 
     <ng-template pTemplate="body" let-row>
       <tr>
-        <td><i class="pi pi-user mr-2"></i>{{ row.dni }}</td>
+        <td><i class="pi pi-id-card mr-2"></i>{{ row.dni }}</td>
+        <td>{{ row.nombre }}</td>
+        <td>{{ row.materia }}</td>
         <td>
           <p-listbox
-            [options]="formatCodigoList(row.codigosComisiones)"
-            [(ngModel)]="row.codigos_comisiones"
+            [options]="formatCodigoList(row.comisiones)"
             optionLabel="label"
             [style]="{ width: '15rem' }"
             scrollHeight="120px"
@@ -63,7 +70,7 @@
 
     <ng-template pTemplate="emptymessage">
       <tr>
-        <td colspan="2">No se encontraron registros.</td>
+        <td colspan="4">No se encontraron registros.</td>
       </tr>
     </ng-template>
   </p-table>

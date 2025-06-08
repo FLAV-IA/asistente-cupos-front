@@ -1,4 +1,5 @@
 <p-table
+  *ngIf="sugerenciasDeInscripcion.length > 0"
   [value]="sugerenciasDeInscripcion"
   dataKey="id"
   [paginator]="true"

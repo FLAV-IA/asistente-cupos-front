@@ -6,25 +6,49 @@
     ></historia-academica-list>
   </div>
 
-  <div [ngClass]="fueCargadoElArchivo ? 'col-7' : 'col-8'">
-    <h4 class="mb-3">Asistente de Inscripción</h4>
+  <div class="col-10">
+    <div
+      *ngIf="
+        estado === 'previsualizando' ||
+        estado === 'cargando' ||
+        estado === 'mostrandoSugerencias'
+      "
+      class="flex justify-content-end gap-2 mb-3"
+    >
+      <button
+        pButton
+        type="button"
+        class="p-button-success p-button-rounded px-3"
+        [icon]="loading() ? 'pi pi-spin pi-spinner' : 'pi pi-search'"
+        [label]="loading() ? 'Procesando...' : 'Consultar'"
+        (click)="consultar()"
+        [disabled]="loading()"
+      ></button>
+      <button
+        pButton
+        type="button"
+        label="Limpiar"
+        icon="pi pi-refresh"
+        class="p-button-secondary p-button-rounded px-3"
+        (click)="limpiarTodo()"
+      ></button>
+    </div>
 
     <asistente-panel
-      (archivoCargadoEvent)="filePeticiones = $event"
-      (sugerenciasDeInscripcionEvent)="sugerenciasDeInscripcion = $event"
+      *ngIf="estado === 'inicial'"
+      (archivoCargadoEvent)="onArchivoCargado($event)"
     ></asistente-panel>
 
+    <previsualizador-peticiones-component
+      *ngIf="estado === 'previsualizando' || estado === 'cargando'"
+      [archivoPeticiones]="filePeticiones"
+      (previsualizacionEvent)="onPrevisualizacion($event)"
+    ></previsualizador-peticiones-component>
+
     <tabla-sugerencia-inscripcion
+      *ngIf="estado === 'mostrandoSugerencias'"
       [sugerenciasDeInscripcion]="sugerenciasDeInscripcion"
       (verHistoria)="agregarHistoriaAcademica($event)"
     ></tabla-sugerencia-inscripcion>
-  </div>
-
-  <div class="col-3">
-    <previsualizador-peticiones-component
-      [archivoPeticiones]="filePeticiones"
-      (previsualizacionEvent)="fueCargadoElArchivo = $event"
-    >
-    </previsualizador-peticiones-component>
   </div>
 </div>

@@ -18,7 +18,6 @@
         [customUpload]="true"
         (uploadHandler)="archivoCargadoEvent.emit($event.files[0])"
         (onSelect)="seleccionarArchivo($event)"
-        (clearHandler)="limpiarArchivo()"
         styleClass="p-button-outlined p-button-info w-full"
       ></p-fileUpload>
       <div *ngIf="mensajeError" class="text-red-500 mt-2">
@@ -37,32 +36,5 @@
       *ngIf="!archivoCargado && !mensajeError"
       class="flex align-items-center gap-2 text-red-500 mb-2"
     ></div>
-
-    <div
-      class="flex justify-content-center align-items-center gap-3 mt-3 flex-wrap"
-    >
-      <p-button
-        icon="pi pi-trash"
-        label="Borrar archivo"
-        severity="danger"
-        class="p-button-rounded p-button-outlined"
-        (click)="limpiarArchivo()"
-      ></p-button>
-      <p-button
-        icon="pi pi-search"
-        label="Consultar"
-        severity="success"
-        class="p-button-rounded p-button-raised shadow-2"
-        (click)="consultar()"
-      ></p-button>
-    </div>
-
-    <div
-      *ngIf="loading()"
-      class="flex flex-column align-items-center justify-content-center mt-4 gap-2"
-    >
-      <i class="pi pi-spin pi-spinner text-3xl text-primary"></i>
-      <span class="text-md text-primary font-medium">Procesando...</span>
-    </div>
   </form>
 </p-panel>
