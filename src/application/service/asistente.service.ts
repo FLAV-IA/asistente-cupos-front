@@ -10,7 +10,6 @@ import {
   providedIn: 'root',
 })
 export class AsistenteService {
-  
   private readonly _cuposSugeridos: WritableSignal<SugerenciaDeInscripcion[]> =
     signal<SugerenciaDeInscripcion[]>([])
   private readonly _loading = signal(false)
@@ -33,18 +32,22 @@ export class AsistenteService {
     this._loading.set(true)
 
     this.http.postConsultar(file).subscribe({
-        next: (response) => {
-          this._cuposSugeridos.set(response ?? [])
-          this.logger.log('Respuesta recibida:', response)
-        },
-        error: (error) => {
-          this.logger.error('Error al consultar:', error)
-          this._cuposSugeridos.set([])
-        },
-        complete: () => {
-          this._loading.set(false)
-          this.logger.log('Consulta completada')
-        },
-      })
+      next: (response) => {
+        this._cuposSugeridos.set(response ?? [])
+        this.logger.log('Respuesta recibida:', response)
+      },
+      error: (error) => {
+        this.logger.error('Error al consultar:', error)
+        this._cuposSugeridos.set([])
+      },
+      complete: () => {
+        this._loading.set(false)
+        this.logger.log('Consulta completada')
+      },
+    })
+  }
+
+  limpiarSugerencias(): void {
+    this._cuposSugeridos.set([])
   }
 }

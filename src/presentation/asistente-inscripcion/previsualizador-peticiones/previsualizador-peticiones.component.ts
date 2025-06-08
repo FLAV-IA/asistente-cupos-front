@@ -1,4 +1,11 @@
-import { Component, Input, Output, EventEmitter, inject, effect } from '@angular/core'
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  inject,
+  effect,
+} from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { FormsModule } from '@angular/forms'
 import { TableModule } from 'primeng/table'
@@ -18,22 +25,27 @@ export class PrevisualizadorPeticionesComponent {
   private readonly csvService = inject(CsvService);
   private readonly logger = inject(LoggingService);
   errorMensaje: string | null = null;
+  private archivoCargado = false;
 
   @Output() previsualizacionEvent = new EventEmitter<boolean>();
 
   constructor() {
     effect(() => {
-      this.previsualizacionEvent.emit(this.datosEnriquecidos().length > 0);
+      if (this.archivoCargado && !this.loading()) {
+        this.previsualizacionEvent.emit(true);
+      }
     });
   }
 
   @Input()
   set archivoPeticiones(value: File | null) {
     if (value) {
+      this.archivoCargado = true;
       this.csvService.previsualizarCsv(value);
     } else {
       this.csvService.limpiarPrevisualizacion();
       this.previsualizacionEvent.emit(false);
+      this.archivoCargado = false;
     }
   }
 

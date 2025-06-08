@@ -1,9 +1,12 @@
-import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { delay } from 'rxjs/operators';
-import { ASISTENTE_HTTP_CLIENT, AsistenteHttpClientPort } from './asistente-http-client.port';
-import { SugerenciaDeInscripcion } from '../../domain/SugerenciaDeInscripcion';
-import { HistoriaAcademica } from '../../domain/HistoriaAcademica';
+import { Injectable } from '@angular/core'
+import { Observable, of } from 'rxjs'
+import { delay } from 'rxjs/operators'
+import {
+  ASISTENTE_HTTP_CLIENT,
+  AsistenteHttpClientPort,
+} from './asistente-http-client.port'
+import { SugerenciaDeInscripcion } from '../../domain/SugerenciaDeInscripcion'
+import { HistoriaAcademica } from '../../domain/HistoriaAcademica'
 
 @Injectable({ providedIn: 'root' })
 export class AsistenteHttpClientFake implements AsistenteHttpClientPort {
@@ -29,12 +32,12 @@ export class AsistenteHttpClientFake implements AsistenteHttpClientPort {
         'Sin cupo',
         new HistoriaAcademica('98765432', 5, 4, 7.2, false, ['FIS1'], []),
       ),
-    ];
-    return of(data).pipe(delay(3000));
+    ]
+    return of(data).pipe(delay(3000))
   }
 }
 
 export const ASISTENTE_HTTP_CLIENT_FAKE_PROVIDER = {
   provide: ASISTENTE_HTTP_CLIENT,
   useClass: AsistenteHttpClientFake,
-};
+}
