@@ -1,11 +1,4 @@
 <div class="grid">
-  <div class="col-2">
-    <historia-academica-list
-      [historiaAcademicaList]="historiaAcademicaList"
-      (eliminarHistoria)="eliminarHistoriaAcademica($event)"
-    ></historia-academica-list>
-  </div>
-
   <div class="col-10">
     <div
       *ngIf="
@@ -50,5 +43,12 @@
       [sugerenciasDeInscripcion]="sugerenciasDeInscripcion"
       (verHistoria)="agregarHistoriaAcademica($event)"
     ></tabla-sugerencia-inscripcion>
+  </div>
+
+  <div class="col-2">
+    <historia-academica-list
+      [historiaAcademicaList]="historiaAcademicaList"
+      (eliminarHistoria)="eliminarHistoriaAcademica($event)"
+    ></historia-academica-list>
   </div>
 </div>

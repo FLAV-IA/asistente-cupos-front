@@ -1,6 +1,6 @@
 import { Injectable, signal, WritableSignal, Inject } from '@angular/core';
 import * as Papa from 'papaparse';
-import { EnrichedCsvRow } from '../../domain/EnrichedCsvRow';
+import { PeticionInscripcion } from '../../domain/PeticionInscripcion';
 import { CsvHttpClientPort, CSV_HTTP_CLIENT } from './csv-http-client.port';
 import { LoggingService } from './logging.service';
 
@@ -8,7 +8,7 @@ import { LoggingService } from './logging.service';
   providedIn: 'root',
 })
 export class CsvService {
-  private readonly _previewData: WritableSignal<EnrichedCsvRow[]> = signal<EnrichedCsvRow[]>([]);
+  private readonly _previewData: WritableSignal<PeticionInscripcion[]> = signal<PeticionInscripcion[]>([]);
   private readonly _loading = signal(false);
 
   constructor(
