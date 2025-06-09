@@ -13,64 +13,60 @@
     #dt
     [value]="datosEnriquecidos()"
     [paginator]="true"
-    [rows]="15"
+    [rows]="10"
     [rowsPerPageOptions]="[5, 10, 15, 20]"
     [responsiveLayout]="'scroll'"
     [tableStyle]="{ 'min-width': '100%' }"
-    [globalFilterFields]="['dni', 'nombre', 'materia']"
+    [globalFilterFields]="['dni', 'nombre']"
     class="p-datatable-sm p-datatable-striped p-datatable-hoverable-rows"
   >
-    <!-- Filtros -->
     <ng-template pTemplate="header">
-      <tr>
-        <th>
-          <p-columnFilter
-            type="text"
-            field="dni"
-            placeholder="Filtrar DNI"
-            ariaLabel="Filtrar por DNI"
-            [style]="{ width: '200px' }"
-          />
-        </th>
-        <th>
-          <p-columnFilter
-            type="text"
-            field="codigosComisiones"
-            placeholder="Filtrar Comisiones"
-            ariaLabel="Filtrar por Comisión"
-            [style]="{ width: '200px' }"
-          />
-        </th>
-      </tr>
       <tr>
         <th>DNI</th>
         <th>Nombre</th>
-        <th>Materia</th>
-        <th>Comisiones</th>
+        <th>Coeficiente</th>
+        <th>Total Inscripciones</th>
+        <th>Total Aprobadas</th>
+        <th>Correlativas</th>
+        <th>Cursadas Anteriores</th>
+        <th>Inscripciones Actuales</th>
+        <th>Materias Solicitadas</th>
       </tr>
     </ng-template>
 
     <ng-template pTemplate="body" let-row>
       <tr>
-        <td><i class="pi pi-id-card mr-2"></i>{{ row.dni }}</td>
+        <td>{{ row.dni }}</td>
         <td>{{ row.nombre }}</td>
-        <td>{{ row.materia }}</td>
+        <td>{{ row.historiaAcademica?.coeficiente }}</td>
+        <td>{{ row.historiaAcademica?.totalInscripcionesHistoricas }}</td>
+        <td>{{ row.historiaAcademica?.totalHistoricasAprobadas }}</td>
+        <td>{{ row.historiaAcademica?.cumpleCorrelativas ? 'Sí' : 'No' }}</td>
+        <td>{{ row.historiaAcademica?.codigosCursadasAnteriores?.join(', ') }}</td>
+        <td>{{ row.historiaAcademica?.codigosInscripcionesActuales?.join(', ') }}</td>
         <td>
-          <p-listbox
-            [options]="formatCodigoList(row.comisiones)"
-            optionLabel="label"
-            [style]="{ width: '15rem' }"
-            scrollHeight="120px"
-            [virtualScroll]="true"
-            [virtualScrollItemSize]="5"
-          ></p-listbox>
+          <div *ngFor="let m of row.materias" class="mb-3">
+            <strong>{{ m.nombreMateria }} ({{ m.codigoMateria }})</strong>
+            <div>
+              <em>Correlativa:</em>
+              {{ m.cumpleCorrelativa ? 'Sí' : 'No' }}
+            </div>
+            <p-listbox
+              [options]="formatCodigoList(m.codigosComisionesSolicitadas)"
+              optionLabel="label"
+              [style]="{ width: '15rem' }"
+              scrollHeight="120px"
+              [virtualScroll]="true"
+              [virtualScrollItemSize]="5"
+            ></p-listbox>
+          </div>
         </td>
       </tr>
     </ng-template>
 
     <ng-template pTemplate="emptymessage">
       <tr>
-        <td colspan="4">No se encontraron registros.</td>
+        <td colspan="9">No se encontraron registros.</td>
       </tr>
     </ng-template>
   </p-table>
