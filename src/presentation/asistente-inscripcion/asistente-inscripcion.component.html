@@ -1,3 +1,8 @@
+<previsualizador-comisiones
+  *ngIf="comisiones.length > 0"
+  [comisiones]="comisiones"
+
+></previsualizador-comisiones>
 <div class="grid">
   <div class="col-10">
     <div
@@ -42,6 +47,8 @@
       *ngIf="estado === 'mostrandoSugerencias'"
       [sugerenciasDeInscripcion]="sugerenciasDeInscripcion"
       (verHistoria)="agregarHistoriaAcademica($event)"
+      (cambioDeSugerenciasPreAsignadas)="agregarSugerenciasPreAsignadaAComision($event)"
+
     ></tabla-sugerencia-inscripcion>
   </div>
 
@@ -52,3 +59,4 @@
     ></historia-academica-list>
   </div>
 </div>
+

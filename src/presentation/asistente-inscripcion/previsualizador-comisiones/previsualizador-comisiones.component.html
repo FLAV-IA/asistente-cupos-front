@@ -1,0 +1,17 @@
+<p-carousel [value]="comisiones" [numVisible]="6" [numScroll]="1" [circular]="false">
+  <ng-template let-comision pTemplate="item">
+    <div class="p-3 border-round shadow-sm surface-card text-sm">
+      <div class="font-semibold mb-1 text-gray-700">Comisión {{ comision.codigo }}</div>
+      <div class="text-gray-600">{{ comision.materia }}</div>
+      <div class="text-xs text-gray-500 mt-2">{{ comision.horario }}</div>
+      <div class="text-xs text-gray-500">
+        {{ comision.cuposDisponibles }} / {{ comision.cuposTotales }} cupos
+      </div>
+      <p-progressBar
+        [value]="(comision.cuposDisponibles / comision.cuposTotales) * 100"
+        [showValue]="false"
+      ></p-progressBar>
+
+    </div>
+  </ng-template>
+</p-carousel>

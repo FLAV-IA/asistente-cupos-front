@@ -9,6 +9,10 @@ import { HistoriaAcademica } from '../../domain/HistoriaAcademica'
 import { AsistenteService } from '../../application/service/asistente.service'
 import { CsvService } from '../../application/service/csv.service'
 import { ButtonModule } from 'primeng/button'
+import {previsualizadorComisionesComponent} from "./previsualizador-comisiones/previsualizador-comisiones.component";
+import {Comision} from "../../domain/Comision";
+import {Estudiante} from "../../domain/Estudiante";
+import {Asignador} from "../../service/Asignador";
 
 @Component({
   selector: 'asistente-inscripcion2',
@@ -18,6 +22,7 @@ import { ButtonModule } from 'primeng/button'
     AsistentePanelComponent,
     TablaSugerenciaInscripcionComponent,
     PrevisualizadorPeticionesComponent,
+    previsualizadorComisionesComponent,
     CommonModule,
     ButtonModule,
   ],
@@ -33,6 +38,7 @@ export class AsistenteComponent {
   readonly loading = inject(AsistenteService).loading
   private readonly asistenteService = inject(AsistenteService)
   private readonly csvService = inject(CsvService)
+  comisiones: Comision[] = [];
 
   constructor() {
     effect(() => {
@@ -94,4 +100,12 @@ export class AsistenteComponent {
     this.csvService.limpiarPrevisualizacion()
     this.asistenteService.limpiarSugerencias()
   }
+
+  agregarSugerenciasPreAsignadaAComision(sugerenciasPreAsignadas: SugerenciaDeInscripcion[]) {
+    const asignador = new Asignador();
+    asignador.agregarSugerenciasPreAsignadas(sugerenciasPreAsignadas);
+    this.comisiones= asignador.obtenerComisiones();
+  }
+
+
 }

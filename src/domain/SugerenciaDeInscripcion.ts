@@ -10,5 +10,6 @@ export class SugerenciaDeInscripcion {
     public cupoAsignado?: boolean,
     public motivo?: string,
     public historiaAcademica?: HistoriaAcademica,
+    public preasignado: boolean = false,
   ) {}
 }
