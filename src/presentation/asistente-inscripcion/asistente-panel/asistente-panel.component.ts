@@ -13,6 +13,7 @@ import { PanelModule } from 'primeng/panel'
 import { ButtonModule } from 'primeng/button'
 import { AsistenteService } from '../../../application/service/asistente.service'
 import { LoggingService } from '../../../application/service/logging.service'
+import { CsvService } from '../../../application/service/csv.service'
 
 @Component({
   selector: 'asistente-panel',
@@ -29,6 +30,7 @@ import { LoggingService } from '../../../application/service/logging.service'
 export class AsistentePanelComponent {
   private readonly asistenteService = inject(AsistenteService)
   private readonly logger = inject(LoggingService)
+  private readonly csvService = inject(CsvService)
   readonly respuesta = this.asistenteService.cuposSugeridos$
   readonly loading = this.asistenteService.loading
 
@@ -85,6 +87,7 @@ export class AsistentePanelComponent {
       this.mensajeError = 'Debe cargar un archivo CSV antes de consultar.'
       return
     }
-    this.asistenteService.consultarConArchivo(this.selectedFile)
+    const peticiones = this.csvService.previewData$()
+    this.asistenteService.consultarConPeticiones(peticiones)
   }
 }

@@ -3,6 +3,7 @@ import { of } from 'rxjs';
 import { AsistenteService } from '../../../src/application/service/asistente.service';
 import { LoggingService } from '../../../src/application/service/logging.service';
 import { ASISTENTE_HTTP_CLIENT } from '../../../src/application/service/asistente-http-client.port';
+import { PeticionInscripcion } from '../../../src/domain/PeticionInscripcion';
 
 describe('AsistenteService', () => {
   let service: AsistenteService;
@@ -23,19 +24,19 @@ describe('AsistenteService', () => {
     service = TestBed.inject(AsistenteService);
   });
 
-  it('no debe enviar consulta si el archivo es null', () => {
-    service.consultarConArchivo(null as any);
+  it('no debe enviar consulta si la lista es vacía', () => {
+    service.consultarConPeticiones([]);
 
     expect(adapter.postConsultar).not.toHaveBeenCalled();
     expect(logger.error).toHaveBeenCalled();
   });
 
-  it('debe enviar archivo y actualizar señales', () => {
-    const file = new File(['a'], 'datos.csv');
+  it('debe enviar peticiones y actualizar señales', () => {
+    const peticiones: PeticionInscripcion[] = [{} as PeticionInscripcion];
 
-    service.consultarConArchivo(file);
+    service.consultarConPeticiones(peticiones);
 
-    expect(adapter.postConsultar).toHaveBeenCalledWith(file);
+    expect(adapter.postConsultar).toHaveBeenCalledWith(peticiones);
     expect(service.cuposSugeridos$()).toEqual([]);
     expect(service.loading()).toBe(false);
     expect(logger.log).toHaveBeenCalled();

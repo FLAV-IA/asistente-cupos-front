@@ -6,6 +6,7 @@ import {
   ASISTENTE_HTTP_CLIENT,
   AsistenteHttpClientPort,
 } from './asistente-http-client.port'
+import { PeticionInscripcion } from '../../domain/PeticionInscripcion'
 import { environment } from '../../environments/environment'
 
 @Injectable({
@@ -13,16 +14,16 @@ import { environment } from '../../environments/environment'
 })
 export class AsistenteHttpClientAdapter implements AsistenteHttpClientPort {
   private readonly BASE_URL = environment.apiBaseUrl
-  private readonly ENDPOINT = 'asistente/sugerencia-inscripcion-con-csv'
+  private readonly ENDPOINT = 'asistente/consultar-sugerencia'
 
   constructor(private http: HttpClient) {}
 
-  postConsultar(file: File): Observable<SugerenciaDeInscripcion[]> {
-    const formData = new FormData()
-    formData.append('file', file)
+  postConsultar(
+    peticiones: PeticionInscripcion[],
+  ): Observable<SugerenciaDeInscripcion[]> {
     return this.http.post<SugerenciaDeInscripcion[]>(
       `${this.BASE_URL}${this.ENDPOINT}`,
-      formData,
+      peticiones,
     )
   }
 }
