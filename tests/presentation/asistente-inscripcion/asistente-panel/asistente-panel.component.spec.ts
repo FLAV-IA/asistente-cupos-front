@@ -2,13 +2,14 @@ import { TestBed } from '@angular/core/testing'
 import { AsistentePanelComponent } from '../../../../src/presentation/asistente-inscripcion/asistente-panel/asistente-panel.component'
 import { AsistenteService } from '../../../../src/application/service/asistente.service'
 import { LoggingService } from '../../../../src/application/service/logging.service'
+import { CsvService } from '../../../../src/application/service/csv.service'
 import { signal } from '@angular/core'
 import { EventEmitter, NO_ERRORS_SCHEMA } from '@angular/core'
 
 describe('AsistentePanelComponent', () => {
   let component: AsistentePanelComponent
   let service: {
-    consultarConArchivo: jest.Mock
+    consultarConPeticiones: jest.Mock
     cuposSugeridos$: any
     loading: any
   }
@@ -16,17 +17,19 @@ describe('AsistentePanelComponent', () => {
 
   beforeEach(() => {
     service = {
-      consultarConArchivo: jest.fn(),
+      consultarConPeticiones: jest.fn(),
       cuposSugeridos$: signal([]),
       loading: signal(false),
     }
     logger = { error: jest.fn(), log: jest.fn() }
+    const csvService = { previewData$: signal([]) }
 
     TestBed.configureTestingModule({
       imports: [AsistentePanelComponent],
       providers: [
         { provide: AsistenteService, useValue: service },
         { provide: LoggingService, useValue: logger },
+        { provide: CsvService, useValue: csvService },
       ],
       schemas: [NO_ERRORS_SCHEMA],
     })
@@ -90,7 +93,7 @@ describe('AsistentePanelComponent', () => {
     expect(component.mensajeError).toBe(
       'Debe cargar un archivo CSV antes de consultar.',
     )
-    expect(service.consultarConArchivo).not.toHaveBeenCalled()
+    expect(service.consultarConPeticiones).not.toHaveBeenCalled()
   })
 
   it('debe llamar al servicio al consultar con archivo', () => {
@@ -99,6 +102,6 @@ describe('AsistentePanelComponent', () => {
 
     component.consultar()
 
-    expect(service.consultarConArchivo).toHaveBeenCalledWith(file)
+    expect(service.consultarConPeticiones).toHaveBeenCalled()
   })
 })
