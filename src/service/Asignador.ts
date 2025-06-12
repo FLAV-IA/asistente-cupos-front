@@ -1,15 +1,18 @@
 import {Comision} from "../domain/Comision";
 import {SugerenciaDeInscripcion} from "../domain/SugerenciaDeInscripcion";
 import {Estudiante} from "../domain/Estudiante";
-
+import {AsignadorService} from "../application/service/asignador.service";
+import {effect, inject, Injectable} from "@angular/core";
+@Injectable({
+  providedIn: 'root'
+})
 export class Asignador {
   private comisiones: Comision[] = [];
+  readonly loading = inject(AsignadorService).loading
+  private readonly asignadorService = inject(AsignadorService)
+  readonly comisionesActualizadas = this.asignadorService.comisionesActualizadas
 
-  constructor(comisionesIniciales: Comision[] = []) {
-    this.comisiones = [...comisionesIniciales];
-  }
-
-  public agregarSugerenciasPreAsignadas(sugerencias: SugerenciaDeInscripcion[]) {
+  public preasignarAComision(sugerencias: SugerenciaDeInscripcion[]) {
     this.comisiones= [];
     sugerencias.forEach((s) => this.preAsignarEstudiante(s));
   }
@@ -35,5 +38,10 @@ export class Asignador {
 
   private estudianteYaInscripto(comision: Comision, estudiante: Estudiante): boolean {
     return comision.estudiantesInscriptos.some(e => e.dni === estudiante.dni);
+  }
+
+  asignarAComision(sugerenciasAsignables: SugerenciaDeInscripcion[]) {
+    this.asignadorService.asignarSugerenciasAcomisiones(sugerenciasAsignables);
+    this.comisiones = this.comisionesActualizadas();
   }
 }

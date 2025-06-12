@@ -39,9 +39,11 @@ export class AsistenteComponent {
   private readonly asistenteService = inject(AsistenteService)
   private readonly csvService = inject(CsvService)
   comisiones: Comision[] = [];
+  private readonly asignador = inject(Asignador);
 
   constructor() {
     effect(() => {
+      this.comisiones = this.asignador.comisionesActualizadas();
       this.sugerenciasDeInscripcion = this.asistenteService.cuposSugeridos$()
       if (this.estado === 'cargando' && !this.loading()) {
         this.estado = 'mostrandoSugerencias'
@@ -102,10 +104,16 @@ export class AsistenteComponent {
   }
 
   agregarSugerenciasPreAsignadaAComision(sugerenciasPreAsignadas: SugerenciaDeInscripcion[]) {
-    const asignador = new Asignador();
-    asignador.agregarSugerenciasPreAsignadas(sugerenciasPreAsignadas);
-    this.comisiones= asignador.obtenerComisiones();
+    this.asignador.preasignarAComision(sugerenciasPreAsignadas);
+    this.comisiones= this.asignador.obtenerComisiones();
   }
 
 
+  asignarAComision(sugerenciasAsignables: SugerenciaDeInscripcion[]) {
+    console.log('sugerenciasAsignables', sugerenciasAsignables);
+    console.log('asignando...')
+    this.asignador.asignarAComision(sugerenciasAsignables);
+    this.comisiones = [...this.asignador.obtenerComisiones()];
+    console.log('Comisiones actualizadas:', this.comisiones)
+  }
 }
