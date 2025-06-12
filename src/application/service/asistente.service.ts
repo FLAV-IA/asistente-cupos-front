@@ -1,5 +1,6 @@
 import { Injectable, signal, WritableSignal, Inject } from '@angular/core'
 import { SugerenciaDeInscripcion } from '../../domain/SugerenciaDeInscripcion'
+import { PeticionInscripcion } from '../../domain/PeticionInscripcion'
 import { LoggingService } from './logging.service'
 import {
   ASISTENTE_HTTP_CLIENT,
@@ -23,15 +24,15 @@ export class AsistenteService {
   readonly cuposSugeridos$ = this._cuposSugeridos.asReadonly()
   readonly loading = this._loading.asReadonly()
 
-  consultarConArchivo(file: File | null): void {
-    if (!file) {
-      this.logger.error('No hay archivo seleccionado')
+  consultarConPeticiones(peticiones: PeticionInscripcion[]): void {
+    if (!peticiones || peticiones.length === 0) {
+      this.logger.error('No hay peticiones para consultar')
       return
     }
 
     this._loading.set(true)
 
-    this.http.postConsultar(file).subscribe({
+    this.http.postConsultar(peticiones).subscribe({
       next: (response) => {
         this._cuposSugeridos.set(response ?? [])
         this.logger.log('Respuesta recibida:', response)

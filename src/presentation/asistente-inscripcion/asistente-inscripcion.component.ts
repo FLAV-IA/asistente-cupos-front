@@ -90,8 +90,9 @@ export class AsistenteComponent {
     if (!this.filePeticiones) {
       return
     }
+    const peticiones = this.csvService.previewData$()
     this.estado = 'cargando'
-    this.asistenteService.consultarConArchivo(this.filePeticiones)
+    this.asistenteService.consultarConPeticiones(peticiones)
   }
 
   limpiarTodo(): void {

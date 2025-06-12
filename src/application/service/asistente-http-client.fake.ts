@@ -7,10 +7,11 @@ import {
 } from './asistente-http-client.port'
 import { SugerenciaDeInscripcion } from '../../domain/SugerenciaDeInscripcion'
 import { HistoriaAcademica } from '../../domain/HistoriaAcademica'
+import { PeticionInscripcion } from '../../domain/PeticionInscripcion'
 
 @Injectable({ providedIn: 'root' })
 export class AsistenteHttpClientFake implements AsistenteHttpClientPort {
-  postConsultar(_: File): Observable<SugerenciaDeInscripcion[]> {
+  postConsultar(_: PeticionInscripcion[]): Observable<SugerenciaDeInscripcion[]> {
     const data: SugerenciaDeInscripcion[] = [
       new SugerenciaDeInscripcion(
         'Juan Pérez',
