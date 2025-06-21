@@ -3,7 +3,12 @@
 </div>
 
 <div *ngIf="loading()" class="flex justify-content-center my-3">
-  <i class="pi pi-spin pi-spinner text-2xl"></i>
+  <animacion-placeholder
+    path="/assets/animaciones/loading.json"
+    mensaje="Aún no cargaste un archivo de peticiones"
+    [width]="500"
+    [height]="500">
+  </animacion-placeholder>
 </div>
 
 <div *ngIf="datosEnriquecidos().length > 0">

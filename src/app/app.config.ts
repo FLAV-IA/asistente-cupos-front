@@ -5,7 +5,8 @@ import { routes } from './app.routes'
 import { provideAnimations } from '@angular/platform-browser/animations'
 import { provideHttpClient } from '@angular/common/http'
 import { AsistenteHttpClientFake } from '../application/service/asistente-http-client.fake'
-
+import { provideLottieOptions } from 'ngx-lottie';
+import player from 'lottie-web';
 import { CsvHttpClientAdapter } from '../application/service/csv-http-client.adapter'
 import { environment } from '../environments/environment'
 import { CSV_HTTP_CLIENT } from '../application/service/csv-http-client.port'
@@ -19,6 +20,7 @@ import {ASIGNADOR_HTTP_CLIENT} from "../application/service/asignador-http-clien
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
+    provideLottieOptions({ player: () => player }),
     provideAnimations(),
     provideHttpClient(),
     {

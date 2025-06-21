@@ -1,45 +1,56 @@
-import { Component, effect, inject } from '@angular/core'
-import { HistoriaAcademicaListComponent } from './historia-academica/historia-academica-list.component'
-import { CommonModule } from '@angular/common'
-import { AsistentePanelComponent } from './asistente-panel/asistente-panel.component'
-import { TablaSugerenciaInscripcionComponent } from './sugerencias/tabla-sugerencia-inscripcion.component'
-import { PrevisualizadorPeticionesComponent } from './previsualizador-peticiones/previsualizador-peticiones.component'
-import { SugerenciaDeInscripcion } from '../../domain/SugerenciaDeInscripcion'
-import { HistoriaAcademica } from '../../domain/HistoriaAcademica'
-import { AsistenteService } from '../../application/service/asistente.service'
-import { CsvService } from '../../application/service/csv.service'
-import { ButtonModule } from 'primeng/button'
-import {previsualizadorComisionesComponent} from "./previsualizador-comisiones/previsualizador-comisiones.component";
-import {Comision} from "../../domain/Comision";
-import {Estudiante} from "../../domain/Estudiante";
-import {Asignador} from "../../service/Asignador";
+import {Component, effect, inject, ViewEncapsulation} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ButtonModule } from 'primeng/button';
+import { StepperModule } from 'primeng/stepper';
+import { StepsModule } from 'primeng/steps';
+import { MenuItem } from 'primeng/api';
+import { SugerenciaDeInscripcion } from '../../domain/SugerenciaDeInscripcion';
+import { HistoriaAcademica } from '../../domain/HistoriaAcademica';
+import { Comision } from '../../domain/Comision';
+import { AsistenteService } from '../../application/service/asistente.service';
+import { CsvService } from '../../application/service/csv.service';
+import { Asignador } from '../../service/Asignador';
+import { previsualizadorComisionesComponent } from './previsualizador-comisiones/previsualizador-comisiones.component';
+import { StepState } from './utils/constants';
+import { AsistentePaso1CargaComponent } from './pasos/paso1/asistente-paso1-carga.component';
+import { AsistentePaso2PrevisualizacionComponent } from './pasos/paso2/asistente-paso2-previsualizacion.component';
+import { AsistentePaso3SugerenciasComponent } from './pasos/paso3/asistente-paso3-sugerencias.component';
 
 @Component({
   selector: 'asistente-inscripcion2',
   standalone: true,
   imports: [
-    HistoriaAcademicaListComponent,
-    AsistentePanelComponent,
-    TablaSugerenciaInscripcionComponent,
-    PrevisualizadorPeticionesComponent,
-    previsualizadorComisionesComponent,
     CommonModule,
     ButtonModule,
+    StepperModule,
+    StepsModule,
+    previsualizadorComisionesComponent,
+    AsistentePaso1CargaComponent,
+    AsistentePaso2PrevisualizacionComponent,
+    AsistentePaso3SugerenciasComponent
   ],
-
   templateUrl: './asistente-inscripcion.component.html',
+  styleUrls: ['./asistente-inscripcion.component.css']
+
 })
 export class AsistenteComponent {
-  estado: 'inicial' | 'previsualizando' | 'cargando' | 'mostrandoSugerencias' =
-    'inicial'
-  filePeticiones: File | null = null
-  sugerenciasDeInscripcion: SugerenciaDeInscripcion[] = []
-  historiaAcademicaList: HistoriaAcademica[] = []
-  readonly loading = inject(AsistenteService).loading
-  private readonly asistenteService = inject(AsistenteService)
-  private readonly csvService = inject(CsvService)
+  estado: 'inicial' | 'previsualizando' | 'cargando' | 'mostrandoSugerencias' = 'inicial';
+  filePeticiones: File | null = null;
+  sugerenciasDeInscripcion: SugerenciaDeInscripcion[] = [];
+  historiaAcademicaList: HistoriaAcademica[] = [];
   comisiones: Comision[] = [];
+  stepActived: number = StepState.INICIAL;
+
+  readonly loading = inject(AsistenteService).loading;
+  private readonly asistenteService = inject(AsistenteService);
+  private readonly csvService = inject(CsvService);
   private readonly asignador = inject(Asignador);
+
+  items: MenuItem[] = [
+    { label: 'Carga' },
+    { label: 'Previsualización' },
+    { label: 'Sugerencias' }
+  ];
 
   constructor() {
     effect(() => {
@@ -51,24 +62,14 @@ export class AsistenteComponent {
     })
   }
 
-  agregarHistoriaAcademica(sugerencia: SugerenciaDeInscripcion): void {
-    const existe = this.historiaAcademicaList.some(
-      (h) => h.dni === sugerencia.historiaAcademica?.dni,
-    )
-    if (!existe) {
-      const historiaItem: HistoriaAcademica = sugerencia.historiaAcademica!
-      this.historiaAcademicaList.push(historiaItem)
-    }
-  }
-  eliminarHistoriaAcademica(item: HistoriaAcademica): void {
-    this.historiaAcademicaList = this.historiaAcademicaList.filter(
-      (h) => h !== item,
-    )
+  onStepChange(event: any): void {
+    this.stepActived = event.index;
   }
 
   onArchivoCargado(file: File | null): void {
-    this.filePeticiones = file
-    this.estado = file ? 'previsualizando' : 'inicial'
+    this.filePeticiones = file;
+    this.estado = file ? 'previsualizando' : 'inicial';
+    this.cambiarAStep(StepState.PREVISUALIZACION);
   }
 
   onPrevisualizacion(preview: boolean): void {
@@ -93,6 +94,7 @@ export class AsistenteComponent {
     const peticiones = this.csvService.previewData$()
     this.estado = 'cargando'
     this.asistenteService.consultarConPeticiones(peticiones)
+    this.cambiarAStep(StepState.ASIGNACION);
   }
 
   limpiarTodo(): void {
@@ -102,19 +104,35 @@ export class AsistenteComponent {
     this.estado = 'inicial'
     this.csvService.limpiarPrevisualizacion()
     this.asistenteService.limpiarSugerencias()
+    this.cambiarAStep(StepState.INICIAL);
   }
 
-  agregarSugerenciasPreAsignadaAComision(sugerenciasPreAsignadas: SugerenciaDeInscripcion[]) {
+  agregarHistoriaAcademica(sugerencia: SugerenciaDeInscripcion): void {
+    const existe = this.historiaAcademicaList.some(
+      (h) => h.dni === sugerencia.historiaAcademica?.dni
+    );
+    if (!existe && sugerencia.historiaAcademica) {
+      this.historiaAcademicaList.push(sugerencia.historiaAcademica);
+    }
+  }
+
+  eliminarHistoriaAcademica(item: HistoriaAcademica): void {
+    this.historiaAcademicaList = this.historiaAcademicaList.filter(
+      (h) => h !== item
+    );
+  }
+
+  agregarSugerenciasPreAsignadaAComision(sugerenciasPreAsignadas: SugerenciaDeInscripcion[]): void {
     this.asignador.preasignarAComision(sugerenciasPreAsignadas);
     this.comisiones= this.asignador.obtenerComisiones();
   }
 
-
-  asignarAComision(sugerenciasAsignables: SugerenciaDeInscripcion[]) {
-    console.log('sugerenciasAsignables', sugerenciasAsignables);
-    console.log('asignando...')
+  asignarAComision(sugerenciasAsignables: SugerenciaDeInscripcion[]): void {
     this.asignador.asignarAComision(sugerenciasAsignables);
     this.comisiones = [...this.asignador.obtenerComisiones()];
-    console.log('Comisiones actualizadas:', this.comisiones)
+  }
+
+  private cambiarAStep(paso: number): void {
+    this.stepActived = paso;
   }
 }

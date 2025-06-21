@@ -14,6 +14,8 @@ import { ButtonModule } from 'primeng/button'
 import { AsistenteService } from '../../../application/service/asistente.service'
 import { LoggingService } from '../../../application/service/logging.service'
 import { CsvService } from '../../../application/service/csv.service'
+import {AnimationOptions} from "ngx-lottie";
+import { LottieComponent } from 'ngx-lottie'
 
 @Component({
   selector: 'asistente-panel',
@@ -25,7 +27,9 @@ import { CsvService } from '../../../application/service/csv.service'
     FileUploadModule,
     PanelModule,
     ButtonModule,
+    LottieComponent
   ],
+  styleUrls: ['./asistente-panel.component.css'],
 })
 export class AsistentePanelComponent {
   private readonly asistenteService = inject(AsistenteService)
@@ -42,7 +46,11 @@ export class AsistentePanelComponent {
   @Output() archivoCargadoEvent = new EventEmitter<any>()
   @ViewChild('fileUpload') fileUpload!: FileUpload
   @Output() sugerenciasDeInscripcionEvent = new EventEmitter<any[]>()
-
+  options: AnimationOptions = {
+    path: '/assets/animaciones/asistente.json', // ruta al JSON
+    loop: true,
+    autoplay: true
+  };
   constructor() {
     effect(() => {
       this.sugerenciasDeInscripcionEvent.emit(this.respuesta())

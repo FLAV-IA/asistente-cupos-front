@@ -12,12 +12,13 @@ import { TableModule } from 'primeng/table'
 import { ListboxModule } from 'primeng/listbox'
 import { LoggingService } from '../../../application/service/logging.service'
 import { CsvService } from '../../../application/service/csv.service'
+import {AnimacionPlaceholderComponent} from "../../animations/animation-container.component";
 
 @Component({
   selector: 'previsualizador-peticiones-component',
   templateUrl: './previsualizador-peticiones.component.html',
   standalone: true,
-  imports: [CommonModule, FormsModule, TableModule, ListboxModule],
+  imports: [CommonModule, FormsModule, TableModule, ListboxModule,AnimacionPlaceholderComponent],
 })
 export class PrevisualizadorPeticionesComponent {
   readonly datosEnriquecidos = inject(CsvService).previewData$;
