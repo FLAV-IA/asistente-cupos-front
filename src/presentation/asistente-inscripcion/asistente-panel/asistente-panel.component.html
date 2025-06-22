@@ -20,6 +20,8 @@
         (onSelect)="seleccionarArchivo($event)"
         chooseIcon="pi pi-upload"
         chooseStyleClass="custom-upload-button"
+        [invalidFileTypeMessageDetail]="'error con el archivo cargado'"
+        [invalidFileTypeMessageSummary]="''"
       >
       </p-fileUpload>
 

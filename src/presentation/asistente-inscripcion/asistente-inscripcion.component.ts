@@ -69,7 +69,8 @@ export class AsistenteComponent {
   onArchivoCargado(file: File | null): void {
     this.filePeticiones = file;
     this.estado = file ? 'previsualizando' : 'inicial';
-    this.cambiarAStep(StepState.PREVISUALIZACION);
+    if(file)
+      this.cambiarAStep(StepState.PREVISUALIZACION);
   }
 
   onPrevisualizacion(preview: boolean): void {

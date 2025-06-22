@@ -13,12 +13,13 @@ import { ListboxModule } from 'primeng/listbox'
 import { LoggingService } from '../../../application/service/logging.service'
 import { CsvService } from '../../../application/service/csv.service'
 import {AnimacionPlaceholderComponent} from "../../animations/animation-container.component";
+import { DialogModule } from 'primeng/dialog';
 
 @Component({
   selector: 'previsualizador-peticiones-component',
   templateUrl: './previsualizador-peticiones.component.html',
   standalone: true,
-  imports: [CommonModule, FormsModule, TableModule, ListboxModule,AnimacionPlaceholderComponent],
+  imports: [CommonModule, FormsModule, TableModule, ListboxModule,AnimacionPlaceholderComponent,DialogModule,],
 })
 export class PrevisualizadorPeticionesComponent {
   readonly datosEnriquecidos = inject(CsvService).previewData$;
@@ -29,11 +30,14 @@ export class PrevisualizadorPeticionesComponent {
   private archivoCargado = false;
 
   @Output() previsualizacionEvent = new EventEmitter<boolean>();
+  errorCsv: string = '';
+  mostrarErrorCsv: boolean = true;
 
   constructor() {
     effect(() => {
       if (this.archivoCargado && !this.loading()) {
         this.previsualizacionEvent.emit(true);
+        this.errorCsv = this.csvService.errorMensaje$();
       }
     });
   }
@@ -54,5 +58,10 @@ export class PrevisualizadorPeticionesComponent {
     return codigos
       ? codigos.map((codigo) => ({ label: codigo, value: codigo }))
       : [];
+  }
+
+  resetearError() {
+    this.errorCsv = '';
+    this.csvService.resetearError()
   }
 }
