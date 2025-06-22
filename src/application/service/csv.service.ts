@@ -10,7 +10,8 @@ import { LoggingService } from './logging.service';
 export class CsvService {
   private readonly _previewData: WritableSignal<PeticionInscripcion[]> = signal<PeticionInscripcion[]>([]);
   private readonly _loading = signal(false);
-
+  private readonly _errorMensaje = signal<string >('');
+  readonly errorMensaje$ = this._errorMensaje.asReadonly();
   constructor(
     @Inject(CSV_HTTP_CLIENT) private httpClient: CsvHttpClientPort,
     private logger: LoggingService,
@@ -43,6 +44,7 @@ export class CsvService {
       const fields = parsed.meta.fields ?? [];
       if (!fields.includes('dni') || !fields.includes('codigos_comisiones')) {
         this.logger.error('El archivo CSV no contiene las columnas requeridas.');
+        this._errorMensaje.set('El archivo CSV no contiene las columnas requeridas.');
         this._previewData.set([]);
         return;
       }
@@ -74,5 +76,8 @@ export class CsvService {
         this._loading.set(false);
       },
     });
+  }
+  resetearError(): void {
+    this._errorMensaje.set('');
   }
 }

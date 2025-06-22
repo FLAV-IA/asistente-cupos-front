@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import {Component, Input, Output, EventEmitter, inject} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FileUploadModule } from 'primeng/fileupload';
@@ -16,6 +16,11 @@ import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { SugerenciaDeInscripcion } from '../../../domain/SugerenciaDeInscripcion';
 import { HistoriaAcademica } from '../../../domain/HistoriaAcademica';
 import { InputSwitchModule } from 'primeng/inputswitch';
+import {ToggleButtonModule} from "primeng/togglebutton";
+import {AsistenteService} from "../../../application/service/asistente.service";
+import {Asignador} from "../../../service/Asignador";
+import {AsignadorService} from "../../../application/service/asignador.service";
+import {Comision} from "../../../domain/Comision";
 
 @Component({
   selector: 'tabla-sugerencia-inscripcion',
@@ -37,14 +42,43 @@ import { InputSwitchModule } from 'primeng/inputswitch';
     ListboxModule,
     IconFieldModule,
     OverlayPanelModule,
+    InputSwitchModule
   ],
 })
 export class TablaSugerenciaInscripcionComponent {
   @Input() sugerenciasDeInscripcion: SugerenciaDeInscripcion[] = [];
   @Input() historiaAcademicaList: HistoriaAcademica[] = [];
   @Output() verHistoria = new EventEmitter<any>();
+  sugerenciasPreAsignadas: SugerenciaDeInscripcion[]= [];
+  @Output() cambioDeSugerenciasPreAsignadas = new EventEmitter<SugerenciaDeInscripcion[]>();
+  preasignado: boolean = false;
+  @Output() asignarSugerenciasPreasignadas = new EventEmitter<SugerenciaDeInscripcion[]>();
 
   agregarConsulta(cupo: any) {
     this.verHistoria.emit(cupo);
+  }
+
+  preAsignarAComision(sugerenciaDeInscripcion: SugerenciaDeInscripcion, accion: any) {
+    const  modificarSugerencia= accion.checked
+      ? (arr: any[]) => [...arr, sugerenciaDeInscripcion]
+      : (arr: any[]) => arr.filter(s => s !== sugerenciaDeInscripcion);
+
+    this.sugerenciasPreAsignadas = modificarSugerencia(this.sugerenciasPreAsignadas);
+  }
+
+  preasignarSugerencias() {
+    this.cambioDeSugerenciasPreAsignadas.emit(this.sugerenciasPreAsignadas);
+    this.preasignado = true;
+  }
+
+  asignarSugerencias() {
+    this.asignarSugerenciasPreasignadas.emit(this.sugerenciasPreAsignadas);
+  }
+
+  limpiarComisiones() {
+    this.sugerenciasPreAsignadas= [];
+    this.cambioDeSugerenciasPreAsignadas.emit(this.sugerenciasPreAsignadas);
+    this.preasignado = false;
+    this.sugerenciasDeInscripcion.forEach(s => s.preasignado = false);
   }
 }

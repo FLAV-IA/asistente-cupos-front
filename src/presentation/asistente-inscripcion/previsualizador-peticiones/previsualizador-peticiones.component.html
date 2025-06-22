@@ -3,8 +3,29 @@
 </div>
 
 <div *ngIf="loading()" class="flex justify-content-center my-3">
-  <i class="pi pi-spin pi-spinner text-2xl"></i>
+  <animacion-placeholder
+    path="/assets/animaciones/loading.json"
+    mensaje="Aún no cargaste un archivo de peticiones"
+    [width]="500"
+    [height]="500">
+  </animacion-placeholder>
 </div>
+
+<p-dialog
+  [visible]="errorCsv.length>0"
+  (visibleChange)="resetearError()"
+  [modal]="true"
+  [dismissableMask]="true"
+  [closable]="true"
+  [style]="{ width: '30rem' }"
+  header="⚠️ Archivo inválido">
+        <animacion-placeholder
+          [path]="'/assets/animaciones/errorFormato.json'"
+          [mensaje]="errorCsv"
+          [width]="300"
+          [height]="300">
+        </animacion-placeholder>
+</p-dialog>
 
 <div *ngIf="datosEnriquecidos().length > 0">
   <h4 class="mb-3">Previsualización de Pedidos</h4>

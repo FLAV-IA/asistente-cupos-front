@@ -18,6 +18,7 @@
       <th pSortableColumn="cupoAsignado">Asignado</th>
       <th pSortableColumn="motivo">Motivo</th>
       <th>Historia Académica</th>
+      <th>Asignación</th>
     </tr>
     <tr>
       <th>
@@ -58,6 +59,23 @@
         ></p-columnFilter>
       </th>
       <th></th>
+      <th>
+        <p-button
+          icon="pi pi-check"
+          [label]="preasignado ? 'Asignar cupos' : 'PreAsignar cupos'"
+          (click)="preasignado ? asignarSugerencias() : preasignarSugerencias()"
+          [styleClass]="preasignado ? 'p-button-sm p-button-text p-button-secondary' : 'p-button-sm p-button-text p-button-success'"
+        ></p-button>
+
+        <p-button
+          *ngIf="preasignado"
+          icon="pi pi-times"
+          label="Limpiar "
+          (click)="limpiarComisiones()"
+          styleClass="p-button-sm p-button-text p-button-secondary"
+        ></p-button>
+
+      </th>
     </tr>
   </ng-template>
 
@@ -127,6 +145,13 @@
           </div>
         </p-overlayPanel>
       </td>
+      <td>
+        <p-inputSwitch
+          (onChange)="preAsignarAComision(cupo,$event)"
+          [(ngModel)]="cupo.preasignado"
+          [disabled]="!cupo.cupoAsignado"
+        ></p-inputSwitch>
+        <label class="ml-2 text-sm font-medium text-gray-700">Asignar</label>
     </tr>
   </ng-template>
 

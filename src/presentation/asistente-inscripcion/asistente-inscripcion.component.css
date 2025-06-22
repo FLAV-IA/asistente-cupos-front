@@ -1,0 +1,5 @@
+:host ::ng-deep .p-steps-item .p-menuitem-link {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+}

@@ -1,54 +1,41 @@
-<div class="grid">
-  <div class="col-10">
-    <div
-      *ngIf="
-        estado === 'previsualizando' ||
-        estado === 'cargando' ||
-        estado === 'mostrandoSugerencias'
-      "
-      class="flex justify-content-end gap-2 mb-3"
-    >
-      <button
-        pButton
-        type="button"
-        class="p-button-success p-button-rounded px-3"
-        [icon]="loading() ? 'pi pi-spin pi-spinner' : 'pi pi-search'"
-        [label]="loading() ? 'Procesando...' : 'Consultar'"
-        (click)="consultar()"
-        [disabled]="loading()"
-      ></button>
-      <button
-        pButton
-        type="button"
-        label="Limpiar"
-        icon="pi pi-refresh"
-        class="p-button-secondary p-button-rounded px-3"
-        (click)="limpiarTodo()"
-      ></button>
-    </div>
+<!-- Previsualizador de comisiones -->
+<previsualizador-comisiones
+  *ngIf="comisiones.length > 0"
+  [comisiones]="comisiones">
+</previsualizador-comisiones>
 
-    <asistente-panel
-      *ngIf="estado === 'inicial'"
-      (archivoCargadoEvent)="onArchivoCargado($event)"
-    ></asistente-panel>
-
-    <previsualizador-peticiones-component
-      *ngIf="estado === 'previsualizando' || estado === 'cargando'"
-      [archivoPeticiones]="filePeticiones"
-      (previsualizacionEvent)="onPrevisualizacion($event)"
-    ></previsualizador-peticiones-component>
-
-    <tabla-sugerencia-inscripcion
-      *ngIf="estado === 'mostrandoSugerencias'"
-      [sugerenciasDeInscripcion]="sugerenciasDeInscripcion"
-      (verHistoria)="agregarHistoriaAcademica($event)"
-    ></tabla-sugerencia-inscripcion>
-  </div>
-
-  <div class="col-2">
-    <historia-academica-list
-      [historiaAcademicaList]="historiaAcademicaList"
-      (eliminarHistoria)="eliminarHistoriaAcademica($event)"
-    ></historia-academica-list>
-  </div>
+<!-- Botones de navegación dinámicos -->
+<div class="flex mb-5 gap-2 justify-content-end">
+  <p-button *ngFor="let i of [0, 1, 2]"
+            (onClick)="stepActived = i"
+            [rounded]="true"
+            [label]="(i + 1).toString()"
+            styleClass="w-2rem h-2rem p-0"
+            [outlined]="stepActived !== i">
+  </p-button>
 </div>
+
+<p-steps
+  [activeIndex]="stepActived"
+  [model]="items"
+  (onChange)="onStepChange($event)">
+</p-steps>
+
+<!-- Componentes por paso -->
+<asistente-paso1-carga *ngIf="stepActived === 0" (archivoCargado)="onArchivoCargado($event)"></asistente-paso1-carga>
+<asistente-paso2-previsualizacion *ngIf="stepActived === 1"
+                                  [filePeticiones]="filePeticiones"
+                                  [loading]="loading()"
+                                  (consultar)="consultar()"
+                                  (limpiar)="limpiarTodo()"
+                                  (previsualizacion)="onPrevisualizacion($event)">
+</asistente-paso2-previsualizacion>
+<asistente-paso3-sugerencias *ngIf="stepActived === 2"
+                             [estado]="estado"
+                             [sugerencias]="sugerenciasDeInscripcion"
+                             [historiaAcademica]="historiaAcademicaList"
+                             (verHistoria)="agregarHistoriaAcademica($event)"
+                             (eliminarHistoria)="eliminarHistoriaAcademica($event)"
+                             (cambioSugerencias)="agregarSugerenciasPreAsignadaAComision($event)"
+                             (asignar)="asignarAComision($event)">
+</asistente-paso3-sugerencias>
