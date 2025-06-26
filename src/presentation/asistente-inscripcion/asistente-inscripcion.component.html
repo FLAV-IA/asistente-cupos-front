@@ -1,7 +1,5 @@
-<!-- Previsualizador de comisiones -->
 <previsualizador-comisiones
-  *ngIf="comisiones.length > 0"
-  [comisiones]="comisiones">
+                           [comisiones]="comisiones">
 </previsualizador-comisiones>
 
 <!-- Botones de navegación dinámicos -->
@@ -18,24 +16,25 @@
 <p-steps
   [activeIndex]="stepActived"
   [model]="items"
-  (onChange)="onStepChange($event)">
+  (activeIndexChange)="cambiarAStep($event)">
 </p-steps>
 
 <!-- Componentes por paso -->
-<asistente-paso1-carga *ngIf="stepActived === 0" (archivoCargado)="onArchivoCargado($event)"></asistente-paso1-carga>
+<asistente-paso1-carga *ngIf="stepActived === 0"
+                       (archivoCargado)="onArchivoCargado($event)"
+                       (onChangeEstado)="modificarStep($event)"></asistente-paso1-carga>
 <asistente-paso2-previsualizacion *ngIf="stepActived === 1"
                                   [filePeticiones]="filePeticiones"
                                   [loading]="loading()"
                                   (consultar)="consultar()"
                                   (limpiar)="limpiarTodo()"
-                                  (previsualizacion)="onPrevisualizacion($event)">
+                                  (onChangeEstado)="modificarStep($event)">
 </asistente-paso2-previsualizacion>
+
 <asistente-paso3-sugerencias *ngIf="stepActived === 2"
                              [estado]="estado"
                              [sugerencias]="sugerenciasDeInscripcion"
-                             [historiaAcademica]="historiaAcademicaList"
-                             (verHistoria)="agregarHistoriaAcademica($event)"
-                             (eliminarHistoria)="eliminarHistoriaAcademica($event)"
-                             (cambioSugerencias)="agregarSugerenciasPreAsignadaAComision($event)"
-                             (asignar)="asignarAComision($event)">
+                             (asignar)="asignarAComision($event)"
+                             (desasignar)="desasignarAComision($event)"
+                             (confirmarAsignacion)="confirmarAsignacion($event)">
 </asistente-paso3-sugerencias>

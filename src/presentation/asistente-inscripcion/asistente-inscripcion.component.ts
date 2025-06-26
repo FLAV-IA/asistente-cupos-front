@@ -5,7 +5,6 @@ import { StepperModule } from 'primeng/stepper';
 import { StepsModule } from 'primeng/steps';
 import { MenuItem } from 'primeng/api';
 import { SugerenciaDeInscripcion } from '../../domain/SugerenciaDeInscripcion';
-import { HistoriaAcademica } from '../../domain/HistoriaAcademica';
 import { Comision } from '../../domain/Comision';
 import { AsistenteService } from '../../application/service/asistente.service';
 import { CsvService } from '../../application/service/csv.service';
@@ -37,7 +36,6 @@ export class AsistenteComponent {
   estado: 'inicial' | 'previsualizando' | 'cargando' | 'mostrandoSugerencias' = 'inicial';
   filePeticiones: File | null = null;
   sugerenciasDeInscripcion: SugerenciaDeInscripcion[] = [];
-  historiaAcademicaList: HistoriaAcademica[] = [];
   comisiones: Comision[] = [];
   stepActived: number = StepState.INICIAL;
 
@@ -54,7 +52,6 @@ export class AsistenteComponent {
 
   constructor() {
     effect(() => {
-      this.comisiones = this.asignador.comisionesActualizadas();
       this.sugerenciasDeInscripcion = this.asistenteService.cuposSugeridos$()
       if (this.estado === 'cargando' && !this.loading()) {
         this.estado = 'mostrandoSugerencias'
@@ -62,78 +59,61 @@ export class AsistenteComponent {
     })
   }
 
-  onStepChange(event: any): void {
-    this.stepActived = event.index;
-  }
 
-  onArchivoCargado(file: File | null): void {
+  onArchivoCargado(file: File|null) {
     this.filePeticiones = file;
-    this.estado = file ? 'previsualizando' : 'inicial';
-    if(file)
-      this.cambiarAStep(StepState.PREVISUALIZACION);
   }
-
-  onPrevisualizacion(preview: boolean): void {
-    if (preview) {
-      this.estado = 'previsualizando'
-      return
-    }
-    if (!this.filePeticiones) {
-      this.estado = 'inicial'
-    } else if (
-      this.estado !== 'cargando' &&
-      this.estado !== 'mostrandoSugerencias'
-    ) {
-      this.estado = 'previsualizando'
-    }
-  }
-
   consultar(): void {
     if (!this.filePeticiones) {
       return
     }
     const peticiones = this.csvService.previewData$()
-    this.estado = 'cargando'
     this.asistenteService.consultarConPeticiones(peticiones)
-    this.cambiarAStep(StepState.ASIGNACION);
   }
 
   limpiarTodo(): void {
     this.filePeticiones = null
     this.sugerenciasDeInscripcion = []
-    this.historiaAcademicaList = []
-    this.estado = 'inicial'
     this.csvService.limpiarPrevisualizacion()
     this.asistenteService.limpiarSugerencias()
-    this.cambiarAStep(StepState.INICIAL);
+    this.modificarStep('inicial')
   }
 
-  agregarHistoriaAcademica(sugerencia: SugerenciaDeInscripcion): void {
-    const existe = this.historiaAcademicaList.some(
-      (h) => h.dni === sugerencia.historiaAcademica?.dni
-    );
-    if (!existe && sugerencia.historiaAcademica) {
-      this.historiaAcademicaList.push(sugerencia.historiaAcademica);
-    }
+  asignarAComision(sugerenciasAsignable: SugerenciaDeInscripcion): void {
+    this.asignador.asignarSugerencia(sugerenciasAsignable)
+    this.comisiones= this.ordernarComisiones()
+  }
+  desasignarAComision(sugerenciasAsignable: SugerenciaDeInscripcion) {
+    this.asignador.desAsignarSugerencia(sugerenciasAsignable)
+    this.comisiones= this.ordernarComisiones()
   }
 
-  eliminarHistoriaAcademica(item: HistoriaAcademica): void {
-    this.historiaAcademicaList = this.historiaAcademicaList.filter(
-      (h) => h !== item
-    );
+
+  ordernarComisiones(): Comision[] {
+    return [...this.asignador.obtenerComisiones()].sort((a, b) => {
+      const aExcede = a.cantidadInscriptosConfirmados < a.cantidadInscriptos ? 1 : 0;
+      const bExcede = b.cantidadInscriptosConfirmados < b.cantidadInscriptos ? 1 : 0;
+      return bExcede - aExcede;
+    });
   }
 
-  agregarSugerenciasPreAsignadaAComision(sugerenciasPreAsignadas: SugerenciaDeInscripcion[]): void {
-    this.asignador.preasignarAComision(sugerenciasPreAsignadas);
-    this.comisiones= this.asignador.obtenerComisiones();
+  confirmarAsignacion(sugerenciasAsignables: SugerenciaDeInscripcion[] = []) {
+      this.asignador.confirmarAsignaciones(sugerenciasAsignables);
   }
 
-  asignarAComision(sugerenciasAsignables: SugerenciaDeInscripcion[]): void {
-    this.asignador.asignarAComision(sugerenciasAsignables);
-    this.comisiones = [...this.asignador.obtenerComisiones()];
+  modificarStep(state: string) {
+    this.estado = state as 'inicial' | 'previsualizando' | 'cargando' | 'mostrandoSugerencias'
+    if('previsualizando' === state)
+    this.cambiarAStep(StepState.PREVISUALIZACION);
+    if('cargando' === state)
+      this.cambiarAStep(StepState.ASIGNACION);
+    if('inicial' === state)
+      this.cambiarAStep(StepState.INICIAL);
   }
 
-  private cambiarAStep(paso: number): void {
+  cambiarAStep(paso: number): void {
     this.stepActived = paso;
   }
+
+
 }

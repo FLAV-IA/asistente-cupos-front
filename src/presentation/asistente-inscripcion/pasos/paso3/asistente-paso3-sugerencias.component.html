@@ -1,0 +1,32 @@
+<div class="grid">
+  <ng-container *ngIf="estado === 'mostrandoSugerencias'; else sinSugerencias">
+    <div [ngClass]="listaDehistoriaAcademica.length > 0 ? 'col-10' : 'col-12'">
+      <tabla-sugerencia-inscripcion
+        [sugerenciasDeInscripcion]="sugerencias"
+        (verHistoria)="verHistoria($event)"
+        (cambioDeSugerenciasPreAsignadas)="cambioSugerencias.emit($event)"
+        (asignarSugerenciasPreasignadas)="confirmarAsignacion.emit($event)"
+        (preAsignarAComision)="asignar.emit($event)"
+        (eliminarPreasignacionComision)="desasignar.emit($event)">
+      </tabla-sugerencia-inscripcion>
+    </div>
+
+    <div class="col-2" *ngIf="listaDehistoriaAcademica.length > 0">
+      <historia-academica-list
+        [historiaAcademicaList]="listaDehistoriaAcademica"
+        (eliminarHistoria)="eliminarHistoria($event)">
+      </historia-academica-list>
+    </div>
+  </ng-container>
+
+  <ng-template #sinSugerencias>
+    <div class="col-12">
+      <animacion-placeholder
+        [path]="estado === 'cargando' ? '/assets/animaciones/consultando.json' : '/assets/animaciones/contenidoNoDisponible.json'"
+        [mensaje]="estado === 'cargando' ? 'Estamos buscando la mejor opción' : 'Aún no tenemos sugerencias para vos'"
+        [width]="500"
+        [height]="500">
+      </animacion-placeholder>
+    </div>
+  </ng-template>
+</div>

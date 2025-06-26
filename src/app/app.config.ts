@@ -16,6 +16,9 @@ import { CsvHttpClientFake } from '../application/service/csv-http-client.fake'
 import {AsignadorHttpClientFake} from "../application/service/asignador-http-client.fake";
 import {AsignadorHttpClientAdapter} from "../application/service/asignador-http-client.adapter";
 import {ASIGNADOR_HTTP_CLIENT} from "../application/service/asignador-http-client.port";
+import {COMISION_HTTP_CLIENT} from "../application/service/comision/comision-http-client.port";
+import {ComisionHttpClientFake} from "../application/service/comision/comision-http-client.fake";
+import {ComisionHttpClientAdapter} from "../application/service/comision/comision-http-client.adapter";
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -40,6 +43,12 @@ export const appConfig: ApplicationConfig = {
       useClass: environment.useMockHttp
         ? AsignadorHttpClientFake
         : AsignadorHttpClientAdapter,
+    },
+    {
+      provide: COMISION_HTTP_CLIENT,
+      useClass: environment.useMockHttp
+        ? ComisionHttpClientFake
+        : ComisionHttpClientAdapter,
     },
   ],
 }

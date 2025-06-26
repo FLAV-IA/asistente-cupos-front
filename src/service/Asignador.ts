@@ -3,6 +3,7 @@ import {SugerenciaDeInscripcion} from "../domain/SugerenciaDeInscripcion";
 import {Estudiante} from "../domain/Estudiante";
 import {AsignadorService} from "../application/service/asignador.service";
 import {effect, inject, Injectable} from "@angular/core";
+import {ComisionService} from "../application/service/comision/comision.service";
 @Injectable({
   providedIn: 'root'
 })
@@ -10,38 +11,43 @@ export class Asignador {
   private comisiones: Comision[] = [];
   readonly loading = inject(AsignadorService).loading
   private readonly asignadorService = inject(AsignadorService)
-  readonly comisionesActualizadas = this.asignadorService.comisionesActualizadas
+  private readonly comisionService = inject(ComisionService);
+  readonly obtenerComisiones = this.comisionService.comisionesActualizadas;
 
-  public preasignarAComision(sugerencias: SugerenciaDeInscripcion[]) {
-    this.comisiones= [];
-    sugerencias.forEach((s) => this.preAsignarEstudiante(s));
+  constructor() {
+    effect(() => {
+      this.comisiones = this.obtenerComisiones();
+    });
   }
 
-  public obtenerComisiones(): Comision[] {
-    return this.comisiones;
-  }
 
-  private preAsignarEstudiante(sugerencia: SugerenciaDeInscripcion) {
+  public asignarSugerencia(sugerencia: SugerenciaDeInscripcion) {
     const estudiante = new Estudiante(sugerencia.nombreEstudiante, sugerencia.dniEstudiante);
     const comision = this.comisiones.find(c => c.codigo === sugerencia.codigoComision);
 
-    if (!comision) {
-      const nueva = new Comision(sugerencia.codigoComision, sugerencia.nombreMateria);
-      nueva.estudiantesInscriptos = [estudiante];
-      this.comisiones.push(nueva);
-    } else {
-      if (!this.estudianteYaInscripto(comision, estudiante)) {
-        comision.estudiantesInscriptos.push(estudiante);
-      }
+    if (comision && !this.estudianteYaInscripto(comision, estudiante)) {
+        comision.recibirEstudiante(estudiante);
     }
   }
+  public desAsignarSugerencia(sugerencia: SugerenciaDeInscripcion) {
+    const estudiante = new Estudiante(sugerencia.nombreEstudiante, sugerencia.dniEstudiante);
+    const comision = this.comisiones.find(c => c.codigo === sugerencia.codigoComision);
+
+    if (comision) {
+      comision.eliminarEstudiante(estudiante);
+    }
+  }
+
+
 
   private estudianteYaInscripto(comision: Comision, estudiante: Estudiante): boolean {
     return comision.estudiantesInscriptos.some(e => e.dni === estudiante.dni);
   }
 
-  asignarAComision(sugerenciasAsignables: SugerenciaDeInscripcion[]) {
+  confirmarAsignaciones(sugerenciasAsignables: SugerenciaDeInscripcion[]) {
     this.asignadorService.asignarSugerenciasAcomisiones(sugerenciasAsignables);
-    this.comisiones = this.comisionesActualizadas();
+    this.comisionService.obtenerComisiones();
   }
+
+
 }

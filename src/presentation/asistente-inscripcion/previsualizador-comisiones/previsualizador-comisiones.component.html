@@ -1,17 +1,26 @@
 <p-carousel [value]="comisiones" [numVisible]="6" [numScroll]="1" [circular]="false">
   <ng-template let-comision pTemplate="item">
-    <div class="p-3 border-round shadow-sm surface-card text-sm">
-      <div class="font-semibold mb-1 text-gray-700">Comisión {{ comision.codigo }}</div>
+    <div
+      class="p-3 border-round shadow-sm text-sm transition-colors duration-300"
+      [ngClass]="{
+        'bg-yellow-100 border-red-400': hayAsignacionesNoConfirmadas(comision),
+        'surface-card': !hayAsignacionesNoConfirmadas(comision)
+      }"
+    >
+      <div class="font-semibold mb-1 text-gray-700">
+        Comisión {{ comision.codigo }}
+      </div>
       <div class="text-gray-600">{{ comision.materia }}</div>
       <div class="text-xs text-gray-500 mt-2">{{ comision.horario }}</div>
       <div class="text-xs text-gray-500">
-        {{ comision.cuposDisponibles }} / {{ comision.cuposTotales }} cupos
+        {{ comision.cantidadInscriptos }} / {{ comision.cuposTotales }} cupos
+        <span *ngIf="hayAsignacionesNoConfirmadas(comision)" class="ml-2 text-red-600 font-bold">(sin confirmar)</span>
       </div>
+
       <p-progressBar
-        [value]="(comision.cuposDisponibles / comision.cuposTotales) * 100"
+        [value]="progreso(comision)"
         [showValue]="false"
       ></p-progressBar>
-
     </div>
   </ng-template>
 </p-carousel>

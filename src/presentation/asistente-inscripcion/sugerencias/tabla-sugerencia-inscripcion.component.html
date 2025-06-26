@@ -62,9 +62,9 @@
       <th>
         <p-button
           icon="pi pi-check"
-          [label]="preasignado ? 'Asignar cupos' : 'PreAsignar cupos'"
-          (click)="preasignado ? asignarSugerencias() : preasignarSugerencias()"
-          [styleClass]="preasignado ? 'p-button-sm p-button-text p-button-secondary' : 'p-button-sm p-button-text p-button-success'"
+          label='confirmar Asignación'
+          (click)=" asignarSugerencias()"
+          styleClass= 'p-button-sm p-button-text p-button-success'
         ></p-button>
 
         <p-button
@@ -147,9 +147,8 @@
       </td>
       <td>
         <p-inputSwitch
-          (onChange)="preAsignarAComision(cupo,$event)"
+          (onChange)="cambioEnPreAsignacion(cupo,$event)"
           [(ngModel)]="cupo.preasignado"
-          [disabled]="!cupo.cupoAsignado"
         ></p-inputSwitch>
         <label class="ml-2 text-sm font-medium text-gray-700">Asignar</label>
     </tr>
@@ -161,3 +160,4 @@
     </tr>
   </ng-template>
 </p-table>
+{{sugerenciasPreAsignadas}}

@@ -16,46 +16,33 @@ import {SugerenciaDeInscripcion} from "../../../../domain/SugerenciaDeInscripcio
     HistoriaAcademicaListComponent,
     AnimacionPlaceholderComponent
   ],
-  template: `
-    <div class="grid">
-      <ng-container *ngIf="estado === 'mostrandoSugerencias'; else sinSugerencias">
-        <div [ngClass]="historiaAcademica.length > 0 ? 'col-10' : 'col-12'">
-          <tabla-sugerencia-inscripcion
-            [sugerenciasDeInscripcion]="sugerencias"
-            (verHistoria)="verHistoria.emit($event)"
-            (cambioDeSugerenciasPreAsignadas)="cambioSugerencias.emit($event)"
-            (asignarSugerenciasPreasignadas)="asignar.emit($event)">
-          </tabla-sugerencia-inscripcion>
-        </div>
-
-        <div class="col-2" *ngIf="historiaAcademica.length > 0">
-          <historia-academica-list
-            [historiaAcademicaList]="historiaAcademica"
-            (eliminarHistoria)="eliminarHistoria.emit($event)">
-          </historia-academica-list>
-        </div>
-      </ng-container>
-
-      <ng-template #sinSugerencias>
-        <div class="col-12">
-          <animacion-placeholder
-            [path]="estado === 'cargando' ? '/assets/animaciones/consultando.json' : '/assets/animaciones/contenidoNoDisponible.json'"
-            [mensaje]="estado === 'cargando' ? 'Estamos buscando la mejor opción' : 'Aún no tenemos sugerencias para vos'"
-            [width]="500"
-            [height]="500">
-          </animacion-placeholder>
-        </div>
-      </ng-template>
-    </div>
-  `
+  templateUrl: './asistente-paso3-sugerencias.component.html',
 })
 export class AsistentePaso3SugerenciasComponent {
   @Input() estado!: string;
   @Input() sugerencias: SugerenciaDeInscripcion[] = [];
-  @Input() historiaAcademica: HistoriaAcademica[] = [];
-
-  @Output() verHistoria = new EventEmitter<SugerenciaDeInscripcion>();
-  @Output() eliminarHistoria = new EventEmitter<HistoriaAcademica>();
+  @Input() listaDehistoriaAcademica: HistoriaAcademica[] = [];
   @Output() cambioSugerencias = new EventEmitter<SugerenciaDeInscripcion[]>();
-  @Output() asignar = new EventEmitter<SugerenciaDeInscripcion[]>();
+  @Output() asignar = new EventEmitter<SugerenciaDeInscripcion>();
+  @Output() desasignar = new EventEmitter<SugerenciaDeInscripcion>();
+  @Output() confirmarAsignacion = new EventEmitter<SugerenciaDeInscripcion[]>();
+
+
+  verHistoria(sugerencia: SugerenciaDeInscripcion): void {
+    const existe = this.listaDehistoriaAcademica.some(
+      (h) => h.dni === sugerencia.historiaAcademica?.dni
+    );
+    if (!existe && sugerencia.historiaAcademica) {
+      this.listaDehistoriaAcademica.push(sugerencia.historiaAcademica);
+    }
+  }
+
+  eliminarHistoria(item: HistoriaAcademica): void {
+    this.listaDehistoriaAcademica = this.listaDehistoriaAcademica.filter(
+      (h) => h !== item
+    );
+  }
+
+
+
 }

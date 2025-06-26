@@ -1,4 +1,4 @@
-import {Component, Input, Output, EventEmitter, inject} from '@angular/core';
+import {Component, Input, Output, EventEmitter, inject, effect} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FileUploadModule } from 'primeng/fileupload';
@@ -21,6 +21,7 @@ import {AsistenteService} from "../../../application/service/asistente.service";
 import {Asignador} from "../../../service/Asignador";
 import {AsignadorService} from "../../../application/service/asignador.service";
 import {Comision} from "../../../domain/Comision";
+import {ComisionService} from "../../../application/service/comision/comision.service";
 
 @Component({
   selector: 'tabla-sugerencia-inscripcion',
@@ -54,16 +55,33 @@ export class TablaSugerenciaInscripcionComponent {
   preasignado: boolean = false;
   @Output() asignarSugerenciasPreasignadas = new EventEmitter<SugerenciaDeInscripcion[]>();
 
+  @Output() preAsignarAComision = new EventEmitter<SugerenciaDeInscripcion>();
+  @Output() eliminarPreasignacionComision = new EventEmitter<SugerenciaDeInscripcion>();
+
+
+
+
   agregarConsulta(cupo: any) {
     this.verHistoria.emit(cupo);
   }
 
-  preAsignarAComision(sugerenciaDeInscripcion: SugerenciaDeInscripcion, accion: any) {
-    const  modificarSugerencia= accion.checked
+  cambioEnPreAsignacion(sugerenciaDeInscripcion: SugerenciaDeInscripcion, accion: any) {
+    this.preasignarSugerencia(sugerenciaDeInscripcion, accion);
+   if(accion.checked)
+     this.preAsignarAComision.emit(sugerenciaDeInscripcion);
+
+   else
+      this.eliminarPreasignacionComision.emit(sugerenciaDeInscripcion);
+
+  }
+
+  preasignarSugerencia(sugerenciaDeInscripcion: SugerenciaDeInscripcion, accion: any) {
+    const modificarSugerencia = accion.checked
       ? (arr: any[]) => [...arr, sugerenciaDeInscripcion]
       : (arr: any[]) => arr.filter(s => s !== sugerenciaDeInscripcion);
 
     this.sugerenciasPreAsignadas = modificarSugerencia(this.sugerenciasPreAsignadas);
+
   }
 
   preasignarSugerencias() {
@@ -73,6 +91,7 @@ export class TablaSugerenciaInscripcionComponent {
 
   asignarSugerencias() {
     this.asignarSugerenciasPreasignadas.emit(this.sugerenciasPreAsignadas);
+    this.sugerenciasPreAsignadas= [];
   }
 
   limpiarComisiones() {
