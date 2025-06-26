@@ -14,6 +14,7 @@ import { StepState } from './utils/constants';
 import { AsistentePaso1CargaComponent } from './pasos/paso1/asistente-paso1-carga.component';
 import { AsistentePaso2PrevisualizacionComponent } from './pasos/paso2/asistente-paso2-previsualizacion.component';
 import { AsistentePaso3SugerenciasComponent } from './pasos/paso3/asistente-paso3-sugerencias.component';
+import {Estudiante} from "../../domain/Estudiante";
 
 @Component({
   selector: 'asistente-inscripcion2',
@@ -116,4 +117,7 @@ export class AsistenteComponent {
   }
 
 
+  confirmarDesasignacion(solicitudDesasignacion: { estudiante: Estudiante; comision: Comision }) {
+    this.asignador.confirmarDesAsignarSugerencia(solicitudDesasignacion.estudiante.dni,solicitudDesasignacion.comision.codigo)
+  }
 }

@@ -12,6 +12,7 @@ import { SugerenciaDeInscripcion } from "../../domain/SugerenciaDeInscripcion";
 export class AsignadorHttpClientAdapter implements AsignadorHttpClientPort {
   private readonly BASE_URL = environment.apiBaseUrl
   private readonly ENDPOINT = 'asignador/asignar-sugerencias'
+  private readonly DELETE_ENDPOINT = 'asignador/eliminar-asignacion';
 
   constructor(private http: HttpClient) {}
 
@@ -19,6 +20,18 @@ export class AsignadorHttpClientAdapter implements AsignadorHttpClientPort {
     return this.http.post<Comision[]>(
       `${this.BASE_URL}${this.ENDPOINT}`,
       sugerencias
+    );
+  }
+
+  deleteAsignacion(dni: string, codigo: string): Observable<void> {
+    const params = new URLSearchParams({
+      codComision: codigo,
+      dniEstudiante: dni,
+    }).toString();
+
+    return this.http.post<void>(
+      `${this.BASE_URL}${this.DELETE_ENDPOINT}?${params}`,
+      null
     );
   }
 }

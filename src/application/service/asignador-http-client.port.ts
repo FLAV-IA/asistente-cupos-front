@@ -7,4 +7,5 @@ export const ASIGNADOR_HTTP_CLIENT = new InjectionToken<AsignadorHttpClientPort>
 
 export interface AsignadorHttpClientPort {
   postAsignar(sugerenciasAsignables: SugerenciaDeInscripcion[]): Observable<Comision[]>;
+  deleteAsignacion(dni: string, codigo: string): Observable<void>;
 }

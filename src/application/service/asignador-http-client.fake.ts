@@ -13,4 +13,8 @@ export class AsignadorHttpClientFake implements AsignadorHttpClientPort {
     ]
     return of(data).pipe(delay(3000))
   }
+  deleteAsignacion(dni: string, codigo: string): Observable<void> {
+    console.log(`Simulando eliminación de asignación para estudiante ${dni} en comisión ${codigo}`);
+    return of(undefined).pipe(delay(1500));
+  }
 }

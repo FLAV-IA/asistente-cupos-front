@@ -50,4 +50,7 @@ export class Asignador {
   }
 
 
+  confirmarDesAsignarSugerencia(dni: string | undefined, codigo: string) {
+    this.asignadorService.desasignarEstudiante(dni, codigo);
+  }
 }

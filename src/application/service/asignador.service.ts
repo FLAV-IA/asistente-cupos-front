@@ -44,5 +44,29 @@ export class AsignadorService {
     })
   }
 
+  desasignarEstudiante(dni: string | undefined, codigo: string): void {
+    if (!dni) {
+      this.logger.error('DNI no definido, no se puede desasignar');
+      return;
+    }
+
+    this._loading.set(true);
+
+    this.http.deleteAsignacion(dni, codigo).subscribe({
+      next: () => {
+        this.logger.log(`Asignación eliminada para estudiante ${dni} de la comisión ${codigo}`);
+        this._comisionesActualizadas.set([]); // o podrías volver a cargar si querés el estado actualizado
+      },
+      error: (error) => {
+        this.logger.error(`Error al eliminar asignación de ${dni} en comisión ${codigo}:`, error);
+        this._comisionesActualizadas.set([]);
+      },
+      complete: () => {
+        this._loading.set(false);
+        this.logger.log('Desasignación completada');
+      },
+    });
+  }
+
 
 }

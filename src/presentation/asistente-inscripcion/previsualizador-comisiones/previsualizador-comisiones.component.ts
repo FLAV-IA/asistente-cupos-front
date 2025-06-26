@@ -1,6 +1,6 @@
 import { CarouselModule } from 'primeng/carousel'
 import { CommonModule } from '@angular/common'
-import {Component, effect, inject, Input} from '@angular/core'
+import {Component, effect, EventEmitter, inject, Input, Output} from '@angular/core'
 import { ComisionCardComponent } from '../../components/comision.card/comision.card.component'
 import { Comision } from '../../../domain/Comision'
 import { ProgressBarModule } from 'primeng/progressbar'
@@ -26,6 +26,7 @@ export class previsualizadorComisionesComponent {
   readonly obtenerComisiones = this.comisionService.comisionesActualizadas;
   comisionSeleccionada: Comision | null = null;
   mostrarDialogo: boolean = false;
+  @Output() desasignarEstudiante = new EventEmitter<{ estudiante: Estudiante, comision: Comision }>();
 
   constructor(private confirmationService: ConfirmationService) {
     effect(() => {
@@ -55,6 +56,7 @@ export class previsualizadorComisionesComponent {
       e => e.dni !== estudiante.dni
     );
     comision.cantidadInscriptos = comision.estudiantesInscriptos.length;
+    this.desasignarEstudiante.emit({ estudiante, comision });
   }
 
   confirmarDesasignacion(estudiante: Estudiante, comision: Comision) {
