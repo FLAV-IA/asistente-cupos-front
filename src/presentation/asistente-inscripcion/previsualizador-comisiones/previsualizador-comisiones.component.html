@@ -2,6 +2,7 @@
   <ng-template let-comision pTemplate="item">
     <div
       class="p-3 border-round shadow-sm text-sm transition-colors duration-300"
+
       [ngClass]="{
         'bg-yellow-100 border-red-400': hayAsignacionesNoConfirmadas(comision),
         'surface-card': !hayAsignacionesNoConfirmadas(comision)
@@ -10,8 +11,8 @@
       <div class="font-semibold mb-1 text-gray-700">
         Comisión {{ comision.codigo }}
       </div>
-      <div class="text-gray-600">{{ comision.materia }}</div>
-      <div class="text-xs text-gray-500 mt-2">{{ comision.horario }}</div>
+      <div class="text-gray-600" style="min-height: 30px;">{{ comision.materia }}</div>
+      <div class="text-xs text-gray-500 mt-2"  style="min-height: 25px;" >{{ comision.horario }}</div>
       <div class="text-xs text-gray-500">
         {{ comision.cantidadInscriptos }} / {{ comision.cuposTotales }} cupos
         <span *ngIf="hayAsignacionesNoConfirmadas(comision)" class="ml-2 text-red-600 font-bold">(sin confirmar)</span>
@@ -21,6 +22,62 @@
         [value]="progreso(comision)"
         [showValue]="false"
       ></p-progressBar>
+      <button
+        pButton
+        type="button"
+        icon="pi pi-users"
+        class="p-button-text p-button-sm"
+        pTooltip="Ver inscriptos"
+        label="Inscriptos"
+        tooltipPosition="left"
+        (click)="abrirDialogo(comision)"
+        aria-label="Ver inscriptos"
+      ></button>
     </div>
   </ng-template>
 </p-carousel>
+<p-dialog
+  header="Alumnos inscriptos"
+  [(visible)]="mostrarDialogo"
+  [modal]="true"
+  [style]="{ width: '800px', height: '800px' }"
+  [closable]="true"
+  (onHide)="comisionSeleccionada = null"
+>
+  <div *ngIf="comisionSeleccionada">
+    <table class="w-full text-sm text-gray-700 border-collapse">
+      <thead>
+      <tr class="bg-gray-100">
+        <th class="text-left p-2 border-b">Nombre</th>
+        <th class="text-left p-2 border-b">DNI</th>
+        <th class="text-center p-2 border-b">Acción</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr
+        *ngFor="let estudiante of comisionSeleccionada.estudiantesInscriptos"
+        class="hover:bg-gray-50 border-b"
+      >
+        <td class="p-2">{{ estudiante.nombre }}</td>
+        <td class="p-2">{{ estudiante.dni }}</td>
+        <td class="p-2 text-center">
+          <p-button
+            icon="pi pi-times"
+            label="Desasignar"
+            class="p-button-rounded p-button-danger p-button-sm"
+            (click)="confirmarDesasignacion(estudiante, comisionSeleccionada)"
+            pTooltip="Desasignar"
+            tooltipPosition="top"
+          ></p-button>
+        </td>
+      </tr>
+      <tr *ngIf="comisionSeleccionada.estudiantesInscriptos.length === 0">
+        <td colspan="3" class="p-3 text-center text-gray-500">
+          No hay estudiantes inscriptos.
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</p-dialog>
+<p-confirmDialog></p-confirmDialog>
