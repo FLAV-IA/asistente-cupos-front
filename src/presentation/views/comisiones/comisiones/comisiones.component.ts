@@ -1,9 +1,9 @@
 import {Component, effect, inject, Input, OnInit} from '@angular/core';
 import { PanelModule } from 'primeng/panel';
 import { CommonModule } from '@angular/common';
-import { ComisionCardComponent } from '../../../components/comision.card/comision.card.component';
+import { ComisionCardComponent } from '../../../comisiones/comision.card/comision.card.component';
 import { Comision } from '../../../../domain/Comision';
-import {CsvService} from "../../../../application/service/csv.service";
+import {CsvService} from "../../../../application/service/csv/csv.service";
 import {ComisionService} from "../../../../application/service/comision/comision.service";
 
 @Component({

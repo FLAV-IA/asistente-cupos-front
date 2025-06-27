@@ -9,9 +9,9 @@ import { SugerenciaDeInscripcion } from '../../domain/SugerenciaDeInscripcion';
 import { Comision } from '../../domain/Comision';
 import { Estudiante } from '../../domain/Estudiante';
 
-import { AsistenteService } from '../../application/service/asistente.service';
-import { CsvService } from '../../application/service/csv.service';
-import { Asignador } from '../../service/Asignador';
+import { AsistenteService } from '../../application/service/asistente/asistente.service';
+import { CsvService } from '../../application/service/csv/csv.service';
+import { Asignador } from '../../domain/Asignador';
 
 import { previsualizadorComisionesComponent } from './previsualizador-comisiones/previsualizador-comisiones.component';
 import { AsistentePaso1CargaComponent } from './pasos/paso1/asistente-paso1-carga.component';

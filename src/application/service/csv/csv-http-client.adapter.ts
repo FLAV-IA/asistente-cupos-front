@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { PeticionInscripcion } from '../../domain/PeticionInscripcion';
+import { PeticionInscripcion } from '../../../domain/PeticionInscripcion';
 import { CsvHttpClientPort, CSV_HTTP_CLIENT } from './csv-http-client.port';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',

@@ -11,7 +11,7 @@ import { FormsModule } from '@angular/forms'
 import { TableModule } from 'primeng/table'
 import { ListboxModule } from 'primeng/listbox'
 import { LoggingService } from '../../../application/service/logging.service'
-import { CsvService } from '../../../application/service/csv.service'
+import { CsvService } from '../../../application/service/csv/csv.service'
 import {AnimacionPlaceholderComponent} from "../../animations/animation-container.component";
 import { DialogModule } from 'primeng/dialog';
 

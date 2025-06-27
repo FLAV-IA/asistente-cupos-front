@@ -1,13 +1,13 @@
 import { Injectable, signal, WritableSignal, Inject } from '@angular/core'
-import { SugerenciaDeInscripcion } from '../../domain/SugerenciaDeInscripcion'
-import { LoggingService } from './logging.service'
+import { SugerenciaDeInscripcion } from '../../../domain/SugerenciaDeInscripcion'
+import { LoggingService } from '../logging.service'
 import {
   ASISTENTE_HTTP_CLIENT,
   AsistenteHttpClientPort,
-} from './asistente-http-client.port'
-import {Comision} from "../../domain/Comision";
+} from '../asistente/asistente-http-client.port'
+import {Comision} from "../../../domain/Comision";
 import {ASIGNADOR_HTTP_CLIENT, AsignadorHttpClientPort} from "./asignador-http-client.port";
-import {ComisionService} from "./comision/comision.service";
+import {ComisionService} from "../comision/comision.service";
 
 @Injectable({
   providedIn: 'root',

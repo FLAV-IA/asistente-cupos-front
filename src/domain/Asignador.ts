@@ -1,7 +1,7 @@
-import {Comision} from "../domain/Comision";
-import {SugerenciaDeInscripcion} from "../domain/SugerenciaDeInscripcion";
-import {Estudiante} from "../domain/Estudiante";
-import {AsignadorService} from "../application/service/asignador.service";
+import {Comision} from "./Comision";
+import {SugerenciaDeInscripcion} from "./SugerenciaDeInscripcion";
+import {Estudiante} from "./Estudiante";
+import {AsignadorService} from "../application/service/asignador/asignador.service";
 import {effect, inject, Injectable, signal} from "@angular/core";
 import {ComisionService} from "../application/service/comision/comision.service";
 @Injectable({
