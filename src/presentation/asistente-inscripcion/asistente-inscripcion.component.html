@@ -4,7 +4,7 @@
 </previsualizador-comisiones>
 
 <!-- Botones de navegación dinámicos -->
-<div class="flex mb-5 gap-2 justify-content-end">
+<div class="flex mb-1 gap-2 justify-content-end">
   <p-button *ngFor="let i of [0, 1, 2]"
             (onClick)="stepActived = i"
             [rounded]="true"
@@ -16,7 +16,11 @@
 
 <p-steps
   [activeIndex]="stepActived"
-  [model]="items"
+  [model]=" [
+    { label: 'Carga' },
+    { label: 'Previsualización' },
+    { label: 'Sugerencias' }
+  ]"
   (activeIndexChange)="cambiarAStep($event)">
 </p-steps>
 
@@ -37,5 +41,7 @@
                              [sugerencias]="sugerenciasDeInscripcion"
                              (asignar)="asignarAComision($event)"
                              (desasignar)="desasignarAComision($event)"
-                             (confirmarAsignacion)="confirmarAsignacion($event)">
+                             (confirmarAsignacion)="confirmarAsignacion($event)"
+                             (reintentarConsultaDeSugerencias)="consultar()">
 </asistente-paso3-sugerencias>
+

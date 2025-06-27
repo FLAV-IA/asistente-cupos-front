@@ -3,7 +3,7 @@
     <div [ngClass]="listaDehistoriaAcademica.length > 0 ? 'col-10' : 'col-12'">
       <tabla-sugerencia-inscripcion
         [sugerenciasDeInscripcion]="sugerencias"
-        (verHistoria)="verHistoria($event)"
+        (mostrarHistoriaAcademica)="verHistoria($event)"
         (cambioDeSugerenciasPreAsignadas)="cambioSugerencias.emit($event)"
         (asignarSugerenciasPreasignadas)="confirmarAsignacion.emit($event)"
         (preAsignarAComision)="asignar.emit($event)"
@@ -22,8 +22,11 @@
   <ng-template #sinSugerencias>
     <div class="col-12">
       <animacion-placeholder
-        [path]="estado === 'cargando' ? '/assets/animaciones/consultando.json' : '/assets/animaciones/contenidoNoDisponible.json'"
-        [mensaje]="estado === 'cargando' ? 'Estamos buscando la mejor opción' : 'Aún no tenemos sugerencias para vos'"
+        [path]="seleccionarAnimacionSinSugerencias()"
+        [mensaje]="seleccionarMsjSinSugerencias()"
+        [botonLabel]="estado === 'error' ? 'Reintentar' : undefined"
+        [accionBoton]="reintentarAccion"
+        [mostrarBoton]="estado === 'error'"
         [width]="500"
         [height]="500">
       </animacion-placeholder>

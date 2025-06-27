@@ -7,6 +7,7 @@ import {
 } from './asistente-http-client.port'
 import {Comision} from "../../domain/Comision";
 import {ASIGNADOR_HTTP_CLIENT, AsignadorHttpClientPort} from "./asignador-http-client.port";
+import {ComisionService} from "./comision/comision.service";
 
 @Injectable({
   providedIn: 'root',
@@ -18,6 +19,7 @@ export class AsignadorService {
 
   constructor(
     @Inject(ASIGNADOR_HTTP_CLIENT) private http: AsignadorHttpClientPort,
+    private comisionService: ComisionService,
     private logger: LoggingService,
   ) {}
 
@@ -39,6 +41,7 @@ export class AsignadorService {
       },
       complete: () => {
         this._loading.set(false)
+        this.comisionService.refrescaLasComisiones();
         this.logger.log('Consulta completada')
       },
     })

@@ -5,7 +5,7 @@ import { HistoriaAcademicaListComponent } from "../../historia-academica/histori
 import { TablaSugerenciaInscripcionComponent } from "../../sugerencias/tabla-sugerencia-inscripcion.component";
 import {HistoriaAcademica} from "../../../../domain/HistoriaAcademica";
 import {SugerenciaDeInscripcion} from "../../../../domain/SugerenciaDeInscripcion";
-
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'asistente-paso3-sugerencias',
@@ -14,7 +14,8 @@ import {SugerenciaDeInscripcion} from "../../../../domain/SugerenciaDeInscripcio
     CommonModule,
     TablaSugerenciaInscripcionComponent,
     HistoriaAcademicaListComponent,
-    AnimacionPlaceholderComponent
+    AnimacionPlaceholderComponent,
+    ButtonModule
   ],
   templateUrl: './asistente-paso3-sugerencias.component.html',
 })
@@ -26,12 +27,10 @@ export class AsistentePaso3SugerenciasComponent {
   @Output() asignar = new EventEmitter<SugerenciaDeInscripcion>();
   @Output() desasignar = new EventEmitter<SugerenciaDeInscripcion>();
   @Output() confirmarAsignacion = new EventEmitter<SugerenciaDeInscripcion[]>();
-
+  @Output() reintentarConsultaDeSugerencias = new EventEmitter<void>();
 
   verHistoria(sugerencia: SugerenciaDeInscripcion): void {
-    const existe = this.listaDehistoriaAcademica.some(
-      (h) => h.dni === sugerencia.historiaAcademica?.dni
-    );
+    const existe = this.listaDehistoriaAcademica.some((h) => h.dni === sugerencia.historiaAcademica?.dni);
     if (!existe && sugerencia.historiaAcademica) {
       this.listaDehistoriaAcademica.push(sugerencia.historiaAcademica);
     }
@@ -43,6 +42,32 @@ export class AsistentePaso3SugerenciasComponent {
     );
   }
 
+  seleccionarAnimacionSinSugerencias(): string {
+    switch (this.estado) {
+      case 'cargando':
+        return '/assets/animaciones/consultando.json';
+      case 'error':
+        return '/assets/animaciones/errorFormato.json';
+      default:
+        return '/assets/animaciones/contenidoNoDisponible.json';
+    }
+  }
 
+  seleccionarMsjSinSugerencias() {
+    switch (this.estado) {
+      case 'cargando':
+        return 'Estamos buscando la mejor opción';
+      case 'error':
+        return 'ups, esto es vergonzoso';
+      default:
+        return 'Aún no tenemos sugerencias para vos';
+    }
+  }
+
+  reintentar() {
+    console.log('Reintentando consulta de sugerencias... paso3');
+    this.reintentarConsultaDeSugerencias.emit(); // ✅ Esto ya no rompe
+  }
+  reintentarAccion = () => this.reintentar();
 
 }

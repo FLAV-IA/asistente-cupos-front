@@ -25,7 +25,7 @@ export class ComisionesComponent implements OnInit {
   }
   ngOnInit() {
     console.log('ComisionesComponent initialized')
-    this.comisionService.obtenerComisiones();
+    this.comisionService.refrescaLasComisiones();
   }
 
 

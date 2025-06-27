@@ -19,7 +19,7 @@
       </div>
 
       <p-progressBar
-        [value]="progreso(comision)"
+        [value]="porcentajeDeInscriptos(comision)"
         [showValue]="false"
       ></p-progressBar>
       <button
@@ -30,7 +30,7 @@
         pTooltip="Ver inscriptos"
         label="Inscriptos"
         tooltipPosition="left"
-        (click)="abrirDialogo(comision)"
+        (click)="mostrarInscriptosEn(comision)"
         aria-label="Ver inscriptos"
       ></button>
     </div>

@@ -14,7 +14,7 @@ export class AsistentePaso1CargaComponent {
   @Output() onChangeEstado = new EventEmitter<Estado>();
 
 
-  darAvisoArchivoCargado(file: File) {
+  darAvisoArchivoCargado(file: File | null) {
     this.onChangeEstado.emit(  file ? 'previsualizando' : 'inicial');
     this.archivoCargado.emit(file)
   }

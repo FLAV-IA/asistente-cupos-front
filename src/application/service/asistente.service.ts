@@ -11,18 +11,18 @@ import {
   providedIn: 'root',
 })
 export class AsistenteService {
-  private readonly _cuposSugeridos: WritableSignal<SugerenciaDeInscripcion[]> =
-    signal<SugerenciaDeInscripcion[]>([])
-  private readonly _loading = signal(false)
+  private readonly _cuposSugeridos: WritableSignal<SugerenciaDeInscripcion[]> = signal([])
+  private readonly _loading: WritableSignal<boolean> = signal(false)
+  private readonly _errorMensaje: WritableSignal<string | null> = signal(null)
+
+  readonly cuposSugeridos$ = this._cuposSugeridos.asReadonly()
+  readonly loading = this._loading.asReadonly()
+  readonly errorMensaje = this._errorMensaje.asReadonly()
 
   constructor(
     @Inject(ASISTENTE_HTTP_CLIENT) private http: AsistenteHttpClientPort,
     private logger: LoggingService,
   ) {}
-
-  // Accesores de solo lectura para el componente
-  readonly cuposSugeridos$ = this._cuposSugeridos.asReadonly()
-  readonly loading = this._loading.asReadonly()
 
   consultarConPeticiones(peticiones: PeticionInscripcion[]): void {
     if (!peticiones || peticiones.length === 0) {
@@ -31,15 +31,21 @@ export class AsistenteService {
     }
 
     this._loading.set(true)
+    this._errorMensaje.set(null) // limpio error previo
 
     this.http.postConsultar(peticiones).subscribe({
       next: (response) => {
         this._cuposSugeridos.set(response ?? [])
         this.logger.log('Respuesta recibida:', response)
+        this._errorMensaje.set(null)
       },
       error: (error) => {
+        const mensaje = error?.message ?? 'Error desconocido en la consulta'
         this.logger.error('Error al consultar:', error)
         this._cuposSugeridos.set([])
+        this._errorMensaje.set(mensaje)
+        this._loading.set(false)
+
       },
       complete: () => {
         this._loading.set(false)

@@ -79,14 +79,14 @@
     </tr>
   </ng-template>
 
-  <ng-template pTemplate="body" let-cupo>
+  <ng-template pTemplate="body" let-sugerenciaAsignacion>
     <tr>
-      <td>{{ cupo.nombreEstudiante }}</td>
-      <td>{{ cupo.dniEstudiante }}</td>
-      <td>{{ cupo.codigoComision }}</td>
+      <td>{{ sugerenciaAsignacion.nombreEstudiante }}</td>
+      <td>{{ sugerenciaAsignacion.dniEstudiante }}</td>
+      <td>{{ sugerenciaAsignacion.codigoComision }}</td>
       <td>
         <p-knob
-          [ngModel]="cupo.prioridad"
+          [ngModel]="sugerenciaAsignacion.prioridad"
           [min]="0"
           [max]="100"
           [readonly]="true"
@@ -97,49 +97,49 @@
       </td>
       <td>
         <p-tag
-          [value]="cupo.cupoAsignado ? 'Sí' : 'No'"
-          [severity]="cupo.cupoAsignado ? 'success' : 'danger'"
+          [value]="sugerenciaAsignacion.cupoAsignado ? 'Sí' : 'No'"
+          [severity]="sugerenciaAsignacion.cupoAsignado ? 'success' : 'danger'"
           class="font-bold"
         ></p-tag>
       </td>
-      <td>{{ cupo.motivo }}</td>
+      <td>{{ sugerenciaAsignacion.motivo }}</td>
       <td>
         <button
           pButton
           type="button"
           icon="pi pi-eye"
           label="Ver"
-          (click)="agregarConsulta(cupo)"
+          (click)="visualizarHistoriaAcademicaDe(sugerenciaAsignacion)"
           class="p-button-text p-button-sm"
         ></button>
         <p-overlayPanel #op>
           <div style="min-width: 300px">
             <h4>Historia Académica</h4>
-            <div><strong>Dni:</strong> {{ cupo.historiaAcademica.dni }}</div>
+            <div><strong>Dni:</strong> {{ sugerenciaAsignacion.historiaAcademica.dni }}</div>
             <div>
               <strong>Total Inscripciones:</strong>
-              {{ cupo.historiaAcademica.totalInscripcionesHistoricas }}
+              {{ sugerenciaAsignacion.historiaAcademica.totalInscripcionesHistoricas }}
             </div>
             <div>
               <strong>Total Aprobadas:</strong>
-              {{ cupo.historiaAcademica.totalHistoricasAprobadas }}
+              {{ sugerenciaAsignacion.historiaAcademica.totalHistoricasAprobadas }}
             </div>
             <div>
               <strong>Coeficiente:</strong>
-              {{ cupo.historiaAcademica.coeficiente }}
+              {{ sugerenciaAsignacion.historiaAcademica.coeficiente }}
             </div>
             <div>
               <strong>Correlativas cumplidas:</strong>
-              {{ cupo.historiaAcademica.cumpleCorrelativas ? 'Sí' : 'No' }}
+              {{ sugerenciaAsignacion.historiaAcademica.cumpleCorrelativas ? 'Sí' : 'No' }}
             </div>
             <div>
               <strong>Cursadas anteriores:</strong>
-              {{ cupo.historiaAcademica.codigosCursadasAnteriores.join(', ') }}
+              {{ sugerenciaAsignacion.historiaAcademica.codigosCursadasAnteriores.join(', ') }}
             </div>
             <div>
               <strong>Inscripciones actuales:</strong>
               {{
-                cupo.historiaAcademica.codigosInscripcionesActuales.join(', ')
+                sugerenciaAsignacion.historiaAcademica.codigosInscripcionesActuales.join(', ')
               }}
             </div>
           </div>
@@ -147,8 +147,9 @@
       </td>
       <td>
         <p-inputSwitch
-          (onChange)="cambioEnPreAsignacion(cupo,$event)"
-          [(ngModel)]="cupo.preasignado"
+          *ngIf="!sugerenciaAsignacion.confirmada"
+          (onChange)="cambioEnPreAsignacion(sugerenciaAsignacion,$event)"
+          [(ngModel)]="sugerenciaAsignacion.preasignado"
         ></p-inputSwitch>
         <label class="ml-2 text-sm font-medium text-gray-700">Asignar</label>
     </tr>

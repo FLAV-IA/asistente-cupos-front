@@ -1,7 +1,8 @@
-import { Injectable, signal, WritableSignal, Inject } from '@angular/core'
+import {Injectable, signal, WritableSignal, Inject, effect} from '@angular/core'
 import { LoggingService } from '../logging.service'
 import {Comision} from "../../../domain/Comision";
 import {COMISION_HTTP_CLIENT, ComisionHttpClientPort} from "./comision-http-client.port";
+import {AsignadorService} from "../asignador.service";
 
 
 @Injectable({
@@ -17,7 +18,7 @@ export class ComisionService {
   readonly comisionesActualizadas= this._comisionesActualizadas.asReadonly()
   readonly loading = this._loading.asReadonly()
 
-  obtenerComisiones(): void {
+  refrescaLasComisiones(): void {
     this._loading.set(true)
 
     this.http.getComisiones().subscribe({

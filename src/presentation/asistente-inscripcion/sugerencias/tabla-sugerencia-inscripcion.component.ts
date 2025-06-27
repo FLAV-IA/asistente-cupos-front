@@ -16,12 +16,6 @@ import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { SugerenciaDeInscripcion } from '../../../domain/SugerenciaDeInscripcion';
 import { HistoriaAcademica } from '../../../domain/HistoriaAcademica';
 import { InputSwitchModule } from 'primeng/inputswitch';
-import {ToggleButtonModule} from "primeng/togglebutton";
-import {AsistenteService} from "../../../application/service/asistente.service";
-import {Asignador} from "../../../service/Asignador";
-import {AsignadorService} from "../../../application/service/asignador.service";
-import {Comision} from "../../../domain/Comision";
-import {ComisionService} from "../../../application/service/comision/comision.service";
 
 @Component({
   selector: 'tabla-sugerencia-inscripcion',
@@ -49,30 +43,24 @@ import {ComisionService} from "../../../application/service/comision/comision.se
 export class TablaSugerenciaInscripcionComponent {
   @Input() sugerenciasDeInscripcion: SugerenciaDeInscripcion[] = [];
   @Input() historiaAcademicaList: HistoriaAcademica[] = [];
-  @Output() verHistoria = new EventEmitter<any>();
-  sugerenciasPreAsignadas: SugerenciaDeInscripcion[]= [];
+  @Output() mostrarHistoriaAcademica = new EventEmitter<any>();
   @Output() cambioDeSugerenciasPreAsignadas = new EventEmitter<SugerenciaDeInscripcion[]>();
-  preasignado: boolean = false;
   @Output() asignarSugerenciasPreasignadas = new EventEmitter<SugerenciaDeInscripcion[]>();
-
   @Output() preAsignarAComision = new EventEmitter<SugerenciaDeInscripcion>();
   @Output() eliminarPreasignacionComision = new EventEmitter<SugerenciaDeInscripcion>();
+  sugerenciasPreAsignadas: SugerenciaDeInscripcion[]= [];
+  preasignado: boolean = false;
 
-
-
-
-  agregarConsulta(cupo: any) {
-    this.verHistoria.emit(cupo);
+  visualizarHistoriaAcademicaDe(sugerencia: SugerenciaDeInscripcion) {
+    this.mostrarHistoriaAcademica.emit(sugerencia);
   }
 
   cambioEnPreAsignacion(sugerenciaDeInscripcion: SugerenciaDeInscripcion, accion: any) {
     this.preasignarSugerencia(sugerenciaDeInscripcion, accion);
    if(accion.checked)
      this.preAsignarAComision.emit(sugerenciaDeInscripcion);
-
    else
       this.eliminarPreasignacionComision.emit(sugerenciaDeInscripcion);
-
   }
 
   preasignarSugerencia(sugerenciaDeInscripcion: SugerenciaDeInscripcion, accion: any) {
@@ -81,23 +69,23 @@ export class TablaSugerenciaInscripcionComponent {
       : (arr: any[]) => arr.filter(s => s !== sugerenciaDeInscripcion);
 
     this.sugerenciasPreAsignadas = modificarSugerencia(this.sugerenciasPreAsignadas);
-
-  }
-
-  preasignarSugerencias() {
-    this.cambioDeSugerenciasPreAsignadas.emit(this.sugerenciasPreAsignadas);
-    this.preasignado = true;
   }
 
   asignarSugerencias() {
     this.asignarSugerenciasPreasignadas.emit(this.sugerenciasPreAsignadas);
-    this.sugerenciasPreAsignadas= [];
+    this.sugerenciasPreAsignadas.forEach(s=>{
+      s.cupoAsignado = true;
+      s.motivo = 'Asignación por usuario';
+      s.confirmada = true;
+    });
+    this.sugerenciasPreAsignadas = [];
+
   }
 
   limpiarComisiones() {
     this.sugerenciasPreAsignadas= [];
     this.cambioDeSugerenciasPreAsignadas.emit(this.sugerenciasPreAsignadas);
     this.preasignado = false;
-    this.sugerenciasDeInscripcion.forEach(s => s.preasignado = false);
+    this.sugerenciasDeInscripcion.forEach(s => s.confirmada = false);
   }
 }

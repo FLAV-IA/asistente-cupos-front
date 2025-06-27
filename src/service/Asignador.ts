@@ -2,7 +2,7 @@ import {Comision} from "../domain/Comision";
 import {SugerenciaDeInscripcion} from "../domain/SugerenciaDeInscripcion";
 import {Estudiante} from "../domain/Estudiante";
 import {AsignadorService} from "../application/service/asignador.service";
-import {effect, inject, Injectable} from "@angular/core";
+import {effect, inject, Injectable, signal} from "@angular/core";
 import {ComisionService} from "../application/service/comision/comision.service";
 @Injectable({
   providedIn: 'root'
@@ -46,7 +46,6 @@ export class Asignador {
 
   confirmarAsignaciones(sugerenciasAsignables: SugerenciaDeInscripcion[]) {
     this.asignadorService.asignarSugerenciasAcomisiones(sugerenciasAsignables);
-    this.comisionService.obtenerComisiones();
   }
 
 

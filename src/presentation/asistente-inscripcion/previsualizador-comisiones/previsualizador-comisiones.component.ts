@@ -35,26 +35,24 @@ export class previsualizadorComisionesComponent {
   }
 
   ngOnInit() {
-    this.comisionService.obtenerComisiones();
+    this.comisionService.refrescaLasComisiones();
   }
 
   hayAsignacionesNoConfirmadas(comision:Comision): boolean {
     return comision.cantidadInscriptosConfirmados < comision.cantidadInscriptos;
   }
 
-   progreso(comision:Comision): number {
+   porcentajeDeInscriptos(comision:Comision): number {
     return (comision.cantidadInscriptos / comision.cuposTotales) * 100;
   }
 
-  abrirDialogo(comision: Comision) {
+  mostrarInscriptosEn(comision: Comision) {
     this.comisionSeleccionada = comision;
     this.mostrarDialogo = true;
   }
 
   desasignar(estudiante: Estudiante, comision: Comision) {
-    comision.estudiantesInscriptos = comision.estudiantesInscriptos.filter(
-      e => e.dni !== estudiante.dni
-    );
+    comision.estudiantesInscriptos = comision.estudiantesInscriptos.filter(e => e.dni !== estudiante.dni);
     comision.cantidadInscriptos = comision.estudiantesInscriptos.length;
     this.desasignarEstudiante.emit({ estudiante, comision });
   }
