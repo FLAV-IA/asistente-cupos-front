@@ -37,20 +37,17 @@ import { StepState } from './utils/constants';
   styleUrls: ['./asistente-inscripcion.component.css'],
 })
 export class AsistenteComponent {
-  // --- Estado interno ---
+
   estado: 'inicial' | 'previsualizando' | 'cargando' | 'mostrandoSugerencias' |'error' = 'inicial';
   stepActived: number = StepState.INICIAL;
   filePeticiones: File | null = null;
   sugerenciasDeInscripcion: SugerenciaDeInscripcion[] = [];
   comisiones: Comision[] = [];
 
-  // --- Inyecciones ---
   private readonly asistenteService = inject(AsistenteService);
   readonly loading = this.asistenteService.loading;
   private readonly csvService = inject(CsvService);
   private readonly asignador = inject(Asignador);
-
-  mensajeErrorConsultaSugerencia = this.asistenteService.errorMensaje;
 
 
   constructor() {

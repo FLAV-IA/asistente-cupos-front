@@ -22,8 +22,11 @@ export class Comision {
     this.cantidadInscriptos++;
   }
   eliminarEstudiante(estudiante: Estudiante): void {
-    this.estudiantesInscriptos = this.estudiantesInscriptos.filter(e => e.dni !== estudiante.dni);
-    this.cantidadInscriptos--;
+    const index = this.estudiantesInscriptos.findIndex(e => e.dni === estudiante.dni);
+    if (index !== -1) {
+      this.estudiantesInscriptos.splice(index, 1);
+      this.cantidadInscriptos = Math.max(0, this.cantidadInscriptos - 1);
+    }
   }
 
   static fromJson(json: any): Comision {

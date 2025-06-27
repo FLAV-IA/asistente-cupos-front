@@ -25,8 +25,13 @@ export class Asignador {
     const estudiante = new Estudiante(sugerencia.nombreEstudiante, sugerencia.dniEstudiante);
     const comision = this.comisiones.find(c => c.codigo === sugerencia.codigoComision);
 
-    if (comision && !this.estudianteYaInscripto(comision, estudiante)) {
+    if (comision && !this.estudianteYaInscripto(comision, estudiante)&&comision.cuposDisponibles > 0) {
         comision.recibirEstudiante(estudiante);
+    }
+    else {
+      sugerencia.motivo = 'El estudiante ya está inscripto en esta comisión o no hay cupos disponibles';
+      sugerencia.cupoAsignado = false;
+      sugerencia.confirmada = false;
     }
   }
   public desAsignarSugerencia(sugerencia: SugerenciaDeInscripcion) {

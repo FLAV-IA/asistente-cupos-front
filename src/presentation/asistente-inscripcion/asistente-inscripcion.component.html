@@ -1,5 +1,6 @@
 <previsualizador-comisiones
-                           [comisiones]="comisiones"
+                            #previsualizadorComisiones
+                            [comisiones]="comisiones"
                             (desasignarEstudiante)="confirmarDesasignacion($event)">
 </previsualizador-comisiones>
 
@@ -42,6 +43,8 @@
                              (asignar)="asignarAComision($event)"
                              (desasignar)="desasignarAComision($event)"
                              (confirmarAsignacion)="confirmarAsignacion($event)"
-                             (reintentarConsultaDeSugerencias)="consultar()">
+                             (reintentarConsultaDeSugerencias)="estado='cargando';consultar()"
+                             [comisiones]="comisiones"
+                              >
 </asistente-paso3-sugerencias>
 

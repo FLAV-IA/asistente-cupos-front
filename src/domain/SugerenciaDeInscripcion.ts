@@ -11,5 +11,6 @@ export class SugerenciaDeInscripcion {
     public motivo?: string,
     public historiaAcademica?: HistoriaAcademica,
     public confirmada: boolean = false,
+    public preasignado: boolean = false
   ) {}
 }

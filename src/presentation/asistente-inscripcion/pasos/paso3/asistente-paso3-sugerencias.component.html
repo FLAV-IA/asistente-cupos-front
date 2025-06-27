@@ -7,6 +7,7 @@
         (cambioDeSugerenciasPreAsignadas)="cambioSugerencias.emit($event)"
         (asignarSugerenciasPreasignadas)="confirmarAsignacion.emit($event)"
         (preAsignarAComision)="asignar.emit($event)"
+        (consultarCupo)="consultarCupo($event)"
         (eliminarPreasignacionComision)="desasignar.emit($event)">
       </tabla-sugerencia-inscripcion>
     </div>
@@ -17,6 +18,7 @@
         (eliminarHistoria)="eliminarHistoria($event)">
       </historia-academica-list>
     </div>
+    <p-toast key="advertenciaDeFaltaDeCupo" position="center" baseZIndex="10000" />
   </ng-container>
 
   <ng-template #sinSugerencias>

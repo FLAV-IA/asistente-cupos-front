@@ -25,7 +25,7 @@ export class previsualizadorComisionesComponent {
   private readonly comisionService = inject(ComisionService);
   readonly obtenerComisiones = this.comisionService.comisionesActualizadas;
   comisionSeleccionada: Comision | null = null;
-  mostrarDialogo: boolean = false;
+  hayQueMostrarInsciptos: boolean = false;
   @Output() desasignarEstudiante = new EventEmitter<{ estudiante: Estudiante, comision: Comision }>();
 
   constructor(private confirmationService: ConfirmationService) {
@@ -48,7 +48,7 @@ export class previsualizadorComisionesComponent {
 
   mostrarInscriptosEn(comision: Comision) {
     this.comisionSeleccionada = comision;
-    this.mostrarDialogo = true;
+    this.hayQueMostrarInsciptos = true;
   }
 
   desasignar(estudiante: Estudiante, comision: Comision) {
