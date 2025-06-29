@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core'
 import { Observable, of } from 'rxjs'
 import { delay } from 'rxjs/operators'
 import { CsvHttpClientPort, CSV_HTTP_CLIENT } from './csv-http-client.port'
-import { PeticionInscripcion } from '../../domain/PeticionInscripcion'
-import { HistoriaAcademica } from '../../domain/HistoriaAcademica'
+import { PeticionInscripcion } from '../../../domain/PeticionInscripcion'
+import { HistoriaAcademica } from '../../../domain/HistoriaAcademica'
 
 @Injectable({ providedIn: 'root' })
 export class CsvHttpClientFake implements CsvHttpClientPort {

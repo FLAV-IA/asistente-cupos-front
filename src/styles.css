@@ -7,3 +7,14 @@
 @import 'primeicons/primeicons.css';
 
 @import '../node_modules/primeflex/primeflex.css';
+
+p-steps .p-steps-item a {
+  cursor: pointer;
+}
+:host ::ng-deep .p-steps-item .pi {
+  font-size: 1.2rem;
+}
+
+:host ::ng-deep .p-steps-item.p-highlight .pi {
+  color: #2196F3;
+}

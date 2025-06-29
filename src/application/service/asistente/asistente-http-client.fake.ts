@@ -5,9 +5,9 @@ import {
   ASISTENTE_HTTP_CLIENT,
   AsistenteHttpClientPort,
 } from './asistente-http-client.port'
-import { SugerenciaDeInscripcion } from '../../domain/SugerenciaDeInscripcion'
-import { HistoriaAcademica } from '../../domain/HistoriaAcademica'
-import { PeticionInscripcion } from '../../domain/PeticionInscripcion'
+import { SugerenciaDeInscripcion } from '../../../domain/SugerenciaDeInscripcion'
+import { HistoriaAcademica } from '../../../domain/HistoriaAcademica'
+import { PeticionInscripcion } from '../../../domain/PeticionInscripcion'
 
 @Injectable({ providedIn: 'root' })
 export class AsistenteHttpClientFake implements AsistenteHttpClientPort {

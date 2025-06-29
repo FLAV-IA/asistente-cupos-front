@@ -2,7 +2,7 @@ import {Injectable, signal, WritableSignal, Inject, effect} from '@angular/core'
 import { LoggingService } from '../logging.service'
 import {Comision} from "../../../domain/Comision";
 import {COMISION_HTTP_CLIENT, ComisionHttpClientPort} from "./comision-http-client.port";
-import {AsignadorService} from "../asignador.service";
+import {AsignadorService} from "../asignador/asignador.service";
 
 
 @Injectable({

@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing'
 import { PrevisualizadorPeticionesComponent } from '../../../../src/presentation/asistente-inscripcion/previsualizador-peticiones/previsualizador-peticiones.component'
 import { LoggingService } from '../../../../src/application/service/logging.service'
-import { CsvService } from '../../../../src/application/service/csv.service'
+import { CsvService } from '../../../../src/application/service/csv/csv.service'
 import { EventEmitter, signal } from '@angular/core'
 
 describe('PrevisualizadorPeticionesComponent', () => {

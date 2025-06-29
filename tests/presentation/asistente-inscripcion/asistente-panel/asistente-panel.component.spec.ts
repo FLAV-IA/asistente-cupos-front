@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing'
 import { AsistentePanelComponent } from '../../../../src/presentation/asistente-inscripcion/asistente-panel/asistente-panel.component'
-import { AsistenteService } from '../../../../src/application/service/asistente.service'
+import { AsistenteService } from '../../../../src/application/service/asistente/asistente.service'
 import { LoggingService } from '../../../../src/application/service/logging.service'
-import { CsvService } from '../../../../src/application/service/csv.service'
+import { CsvService } from '../../../../src/application/service/csv/csv.service'
 import { signal } from '@angular/core'
 import { EventEmitter, NO_ERRORS_SCHEMA } from '@angular/core'
 

@@ -1,5 +1,49 @@
 :host ::ng-deep .p-steps-item .p-menuitem-link {
-  background-color: transparent !important;
-  box-shadow: none !important;
-  border: none !important;
+  background-color: transparent ;
+  box-shadow: none ;
+  border: none ;
+}
+
+:host ::ng-deep .p-steps {
+  font-size: 1.8rem; /* Tamaño general del texto aumentado */
+}
+
+:host ::ng-deep .p-steps-item {
+  min-width: 180px; /* Más ancho para que se noten bien */
+  padding: 1.5rem 1rem; /* Más espacio alrededor */
+  transition: transform 0.2s ease, background-color 0.3s ease;
+}
+
+/* Hace que los pasos se vean clickeables */
+:host ::ng-deep .p-steps-item a {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  padding: 1rem 1.5rem; /* Padding más grande */
+  color: #444;
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Efecto al pasar el mouse por un paso inactivo */
+:host ::ng-deep .p-steps-item:not(.p-highlight):hover a {
+  background-color: #d0e7ff; /* Celeste un poco más suave */
+  color: #0c4a6e;
+  transform: scale(1.1); /* Escala más marcada */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Número dentro del paso (círculo) más grande */
+:host ::ng-deep .p-steps-number {
+  font-size: 2rem; /* Más grande */
+  width: 3.5rem;
+  height: 3.5rem;
+  line-height: 3.5rem;
+}
+
+/* Título del paso más grande y fuerte */
+:host ::ng-deep .p-steps-title {
+  font-size: 1.4rem;
+  font-weight: 700;
 }

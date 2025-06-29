@@ -1,7 +1,7 @@
 import { CarouselModule } from 'primeng/carousel'
 import { CommonModule } from '@angular/common'
 import {Component, effect, EventEmitter, inject, Input, Output} from '@angular/core'
-import { ComisionCardComponent } from '../../components/comision.card/comision.card.component'
+import { ComisionCardComponent } from '../../comisiones/comision.card/comision.card.component'
 import { Comision } from '../../../domain/Comision'
 import { ProgressBarModule } from 'primeng/progressbar'
 import {ComisionService} from "../../../application/service/comision/comision.service";
@@ -32,10 +32,6 @@ export class previsualizadorComisionesComponent {
     effect(() => {
       this.comisiones = this.obtenerComisiones();
     });
-  }
-
-  ngOnInit() {
-    this.comisionService.refrescaLasComisiones();
   }
 
   hayAsignacionesNoConfirmadas(comision:Comision): boolean {

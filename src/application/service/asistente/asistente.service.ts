@@ -1,7 +1,7 @@
 import { Injectable, signal, WritableSignal, Inject } from '@angular/core'
-import { SugerenciaDeInscripcion } from '../../domain/SugerenciaDeInscripcion'
-import { PeticionInscripcion } from '../../domain/PeticionInscripcion'
-import { LoggingService } from './logging.service'
+import { SugerenciaDeInscripcion } from '../../../domain/SugerenciaDeInscripcion'
+import { PeticionInscripcion } from '../../../domain/PeticionInscripcion'
+import { LoggingService } from '../logging.service'
 import {
   ASISTENTE_HTTP_CLIENT,
   AsistenteHttpClientPort,
