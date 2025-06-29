@@ -4,25 +4,15 @@
                             (desasignarEstudiante)="confirmarDesasignacion($event)">
 </previsualizador-comisiones>
 
-<!-- Botones de navegación dinámicos -->
-<div class="flex mb-1 gap-2 justify-content-end">
-  <p-button *ngFor="let i of [0, 1, 2]"
-            (onClick)="stepActived = i"
-            [rounded]="true"
-            [label]="(i + 1).toString()"
-            styleClass="w-2rem h-2rem p-0"
-            [outlined]="stepActived !== i">
-  </p-button>
-</div>
-
 <p-steps
   [activeIndex]="stepActived"
+  [readonly]="false"
   [model]=" [
     { label: 'Carga' },
     { label: 'Previsualización' },
     { label: 'Sugerencias' }
   ]"
-  (activeIndexChange)="cambiarAStep($event)">
+  (activeIndexChange)="stepActived = $event">
 </p-steps>
 
 <!-- Componentes por paso -->
