@@ -1,20 +1,25 @@
-import {Component, effect, inject, ViewEncapsulation} from '@angular/core';
+import { Component, effect, inject, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { StepperModule } from 'primeng/stepper';
 import { StepsModule } from 'primeng/steps';
-import { MenuItem } from 'primeng/api';
+import {ConfirmationService, MenuItem} from 'primeng/api';
+
 import { SugerenciaDeInscripcion } from '../../domain/SugerenciaDeInscripcion';
-import { HistoriaAcademica } from '../../domain/HistoriaAcademica';
 import { Comision } from '../../domain/Comision';
-import { AsistenteService } from '../../application/service/asistente.service';
-import { CsvService } from '../../application/service/csv.service';
-import { Asignador } from '../../service/Asignador';
+import { Estudiante } from '../../domain/Estudiante';
+
+import { AsistenteService } from '../../application/service/asistente/asistente.service';
+import { CsvService } from '../../application/service/csv/csv.service';
+import { Asignador } from '../../domain/Asignador';
+
 import { previsualizadorComisionesComponent } from './previsualizador-comisiones/previsualizador-comisiones.component';
-import { StepState } from './utils/constants';
 import { AsistentePaso1CargaComponent } from './pasos/paso1/asistente-paso1-carga.component';
 import { AsistentePaso2PrevisualizacionComponent } from './pasos/paso2/asistente-paso2-previsualizacion.component';
 import { AsistentePaso3SugerenciasComponent } from './pasos/paso3/asistente-paso3-sugerencias.component';
+
+import { StepState } from './utils/constants';
+import {ComisionService} from "../../application/service/comision/comision.service";
 
 @Component({
   selector: 'asistente-inscripcion2',
@@ -30,110 +35,128 @@ import { AsistentePaso3SugerenciasComponent } from './pasos/paso3/asistente-paso
     AsistentePaso3SugerenciasComponent
   ],
   templateUrl: './asistente-inscripcion.component.html',
-  styleUrls: ['./asistente-inscripcion.component.css']
-
+  styleUrls: ['./asistente-inscripcion.component.css'],
 })
 export class AsistenteComponent {
-  estado: 'inicial' | 'previsualizando' | 'cargando' | 'mostrandoSugerencias' = 'inicial';
+
+  estado: 'inicial' | 'previsualizando' | 'cargando' | 'mostrandoSugerencias' |'error' = 'inicial';
+  stepActived: number = StepState.INICIAL;
   filePeticiones: File | null = null;
   sugerenciasDeInscripcion: SugerenciaDeInscripcion[] = [];
-  historiaAcademicaList: HistoriaAcademica[] = [];
   comisiones: Comision[] = [];
-  stepActived: number = StepState.INICIAL;
 
-  readonly loading = inject(AsistenteService).loading;
   private readonly asistenteService = inject(AsistenteService);
+  readonly loading = this.asistenteService.loading;
   private readonly csvService = inject(CsvService);
   private readonly asignador = inject(Asignador);
+  private readonly comisionService = inject(ComisionService);
+  readonly obtenerComisiones = this.comisionService.comisionesActualizadas;
 
-  items: MenuItem[] = [
-    { label: 'Carga' },
-    { label: 'Previsualización' },
-    { label: 'Sugerencias' }
-  ];
+  ngOnInit() {
+   this.comisionService.refrescaLasComisiones();
+   this.comisiones= this.ordernarComisiones();
+  }
 
   constructor() {
     effect(() => {
-      this.comisiones = this.asignador.comisionesActualizadas();
-      this.sugerenciasDeInscripcion = this.asistenteService.cuposSugeridos$()
+      this.comisiones = this.obtenerComisiones();
+    });
+
+    effect(() => {
+      this.sugerenciasDeInscripcion = this.asistenteService.cuposSugeridos$();
+
       if (this.estado === 'cargando' && !this.loading()) {
-        this.estado = 'mostrandoSugerencias'
+        this.estado = 'mostrandoSugerencias';
       }
-    })
+
+      if (this.asistenteService.errorMensaje()) {
+        this.estado = 'error';
+      }
+    });
   }
 
-  onStepChange(event: any): void {
-    this.stepActived = event.index;
-  }
 
-  onArchivoCargado(file: File | null): void {
+  onArchivoCargado(file: File | null) {
     this.filePeticiones = file;
-    this.estado = file ? 'previsualizando' : 'inicial';
-    if(file)
-      this.cambiarAStep(StepState.PREVISUALIZACION);
-  }
-
-  onPrevisualizacion(preview: boolean): void {
-    if (preview) {
-      this.estado = 'previsualizando'
-      return
-    }
-    if (!this.filePeticiones) {
-      this.estado = 'inicial'
-    } else if (
-      this.estado !== 'cargando' &&
-      this.estado !== 'mostrandoSugerencias'
-    ) {
-      this.estado = 'previsualizando'
-    }
   }
 
   consultar(): void {
-    if (!this.filePeticiones) {
-      return
-    }
-    const peticiones = this.csvService.previewData$()
-    this.estado = 'cargando'
-    this.asistenteService.consultarConPeticiones(peticiones)
-    this.cambiarAStep(StepState.ASIGNACION);
+    console.log('Consultando sugerencias con el archivo:', this.filePeticiones);
+    const peticiones = this.csvService.previewData$();
+    this.asistenteService.consultarConPeticiones(peticiones);
   }
 
   limpiarTodo(): void {
-    this.filePeticiones = null
-    this.sugerenciasDeInscripcion = []
-    this.historiaAcademicaList = []
-    this.estado = 'inicial'
-    this.csvService.limpiarPrevisualizacion()
-    this.asistenteService.limpiarSugerencias()
-    this.cambiarAStep(StepState.INICIAL);
+    this.filePeticiones = null;
+    this.sugerenciasDeInscripcion = [];
+    this.csvService.limpiarPrevisualizacion();
+    this.asistenteService.limpiarSugerencias();
+    this.modificarStep('inicial');
   }
 
-  agregarHistoriaAcademica(sugerencia: SugerenciaDeInscripcion): void {
-    const existe = this.historiaAcademicaList.some(
-      (h) => h.dni === sugerencia.historiaAcademica?.dni
+  asignarAComision(sugerencia: SugerenciaDeInscripcion): void {
+    console.log("Asignando sugerencia a comisión:", sugerencia);
+    this.asignador.asignarSugerencia(sugerencia);
+    this.comisiones = this.ordernarComisiones();
+  }
+
+  desasignarAComision(sugerencia: SugerenciaDeInscripcion): void {
+    this.asignador.desAsignarSugerencia(sugerencia);
+    this.comisiones = this.ordernarComisiones();
+  }
+
+  confirmarAsignacion(sugerenciasAsignables: SugerenciaDeInscripcion[] = []) {
+    this.asignador.confirmarAsignaciones(sugerenciasAsignables);
+  }
+
+  confirmarDesasignacion(solicitudDesasignacion: { estudiante: Estudiante; comision: Comision }) {
+    const { estudiante, comision } = solicitudDesasignacion;
+    this.asignador.confirmarDesAsignarSugerencia(estudiante.dni, comision.codigo);
+    this.resetSugerencia(comision, estudiante);
+  }
+
+
+  private resetSugerencia(comision: Comision, estudiante: Estudiante) {
+    this.sugerenciasDeInscripcion = this.sugerenciasDeInscripcion.map(sugerencia => {
+      let sugerenciaRelacionadaConSolicitud = sugerencia.codigoComision === comision.codigo && sugerencia.historiaAcademica?.dni === estudiante.dni;
+      let sugerenciaReseteada = {...sugerencia,
+                                 confirmada: false,
+                                 motivo: 'Desasignado por el usuario',
+                                 cupoAsignado: false,
+                                 preasignado: false};
+      return sugerenciaRelacionadaConSolicitud
+          ? sugerenciaReseteada
+          : sugerencia;
+      }
     );
-    if (!existe && sugerencia.historiaAcademica) {
-      this.historiaAcademicaList.push(sugerencia.historiaAcademica);
+  }
+
+  ordernarComisiones(): Comision[] {
+    return [...this.asignador.obtenerComisiones()].sort((a, b) => {
+      const aExcede = a.cantidadInscriptosConfirmados < a.cantidadInscriptos ? 1 : 0;
+      const bExcede = b.cantidadInscriptosConfirmados < b.cantidadInscriptos ? 1 : 0;
+      return bExcede - aExcede;
+    });
+  }
+
+  modificarStep(state: string) {
+    this.estado = state as 'inicial' | 'previsualizando' | 'cargando' | 'mostrandoSugerencias';
+
+    switch (state) {
+      case 'previsualizando':
+        this.cambiarAStep(StepState.PREVISUALIZACION);
+        break;
+      case 'cargando':
+        this.cambiarAStep(StepState.ASIGNACION);
+        break;
+      case 'inicial':
+        this.cambiarAStep(StepState.INICIAL);
+        break;
     }
   }
 
-  eliminarHistoriaAcademica(item: HistoriaAcademica): void {
-    this.historiaAcademicaList = this.historiaAcademicaList.filter(
-      (h) => h !== item
-    );
-  }
-
-  agregarSugerenciasPreAsignadaAComision(sugerenciasPreAsignadas: SugerenciaDeInscripcion[]): void {
-    this.asignador.preasignarAComision(sugerenciasPreAsignadas);
-    this.comisiones= this.asignador.obtenerComisiones();
-  }
-
-  asignarAComision(sugerenciasAsignables: SugerenciaDeInscripcion[]): void {
-    this.asignador.asignarAComision(sugerenciasAsignables);
-    this.comisiones = [...this.asignador.obtenerComisiones()];
-  }
-
-  private cambiarAStep(paso: number): void {
+  cambiarAStep(paso: number): void {
     this.stepActived = paso;
   }
+
 }

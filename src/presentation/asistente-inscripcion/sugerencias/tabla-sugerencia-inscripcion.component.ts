@@ -1,4 +1,4 @@
-import {Component, Input, Output, EventEmitter, inject} from '@angular/core';
+import {Component, Input, Output, EventEmitter, inject, effect} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FileUploadModule } from 'primeng/fileupload';
@@ -16,11 +16,6 @@ import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { SugerenciaDeInscripcion } from '../../../domain/SugerenciaDeInscripcion';
 import { HistoriaAcademica } from '../../../domain/HistoriaAcademica';
 import { InputSwitchModule } from 'primeng/inputswitch';
-import {ToggleButtonModule} from "primeng/togglebutton";
-import {AsistenteService} from "../../../application/service/asistente.service";
-import {Asignador} from "../../../service/Asignador";
-import {AsignadorService} from "../../../application/service/asignador.service";
-import {Comision} from "../../../domain/Comision";
 
 @Component({
   selector: 'tabla-sugerencia-inscripcion',
@@ -48,37 +43,68 @@ import {Comision} from "../../../domain/Comision";
 export class TablaSugerenciaInscripcionComponent {
   @Input() sugerenciasDeInscripcion: SugerenciaDeInscripcion[] = [];
   @Input() historiaAcademicaList: HistoriaAcademica[] = [];
-  @Output() verHistoria = new EventEmitter<any>();
-  sugerenciasPreAsignadas: SugerenciaDeInscripcion[]= [];
+  @Output() mostrarHistoriaAcademica = new EventEmitter<any>();
   @Output() cambioDeSugerenciasPreAsignadas = new EventEmitter<SugerenciaDeInscripcion[]>();
-  preasignado: boolean = false;
   @Output() asignarSugerenciasPreasignadas = new EventEmitter<SugerenciaDeInscripcion[]>();
+  @Output() preAsignarAComision = new EventEmitter<SugerenciaDeInscripcion>();
+  @Output() eliminarPreasignacionComision = new EventEmitter<SugerenciaDeInscripcion>();
+  @Output() consultarCupo = new EventEmitter<{ codigoComision: string;
+                                              callback: (hayCupo: boolean) => void; }>();
+  sugerenciasPreAsignadas: SugerenciaDeInscripcion[]= [];
+  preasignado: boolean = false;
 
-  agregarConsulta(cupo: any) {
-    this.verHistoria.emit(cupo);
+  visualizarHistoriaAcademicaDe(sugerencia: SugerenciaDeInscripcion) {
+    this.mostrarHistoriaAcademica.emit(sugerencia);
   }
 
-  preAsignarAComision(sugerenciaDeInscripcion: SugerenciaDeInscripcion, accion: any) {
-    const  modificarSugerencia= accion.checked
-      ? (arr: any[]) => [...arr, sugerenciaDeInscripcion]
-      : (arr: any[]) => arr.filter(s => s !== sugerenciaDeInscripcion);
+  cambioEnPreAsignacion(sugerencia: SugerenciaDeInscripcion, accion: any): void {
+    const codigo :string  = sugerencia.codigoComision ? sugerencia.codigoComision : '';
 
-    this.sugerenciasPreAsignadas = modificarSugerencia(this.sugerenciasPreAsignadas);
+    if (accion.checked) {
+      this.consultarCupo.emit({
+        codigoComision: codigo,
+        callback: (hayCupo: boolean) => {
+          if (hayCupo) {
+            this.agregarSugerenciaPreasignada(sugerencia);
+            this.preAsignarAComision.emit(sugerencia);
+          }
+          else{
+            sugerencia.preasignado = false;
+          }
+        }
+      });
+    } else {
+      this.removerSugerenciaPreasignada(sugerencia);
+      this.eliminarPreasignacionComision.emit(sugerencia);
+    }
   }
 
-  preasignarSugerencias() {
-    this.cambioDeSugerenciasPreAsignadas.emit(this.sugerenciasPreAsignadas);
-    this.preasignado = true;
+
+  private agregarSugerenciaPreasignada(sugerencia: SugerenciaDeInscripcion): void {
+    if (!this.sugerenciasPreAsignadas.includes(sugerencia)) {
+      this.sugerenciasPreAsignadas = [...this.sugerenciasPreAsignadas, sugerencia];
+    }
+  }
+
+  private removerSugerenciaPreasignada(sugerencia: SugerenciaDeInscripcion): void {
+    this.sugerenciasPreAsignadas = this.sugerenciasPreAsignadas
+      .filter(s => s !== sugerencia);
   }
 
   asignarSugerencias() {
     this.asignarSugerenciasPreasignadas.emit(this.sugerenciasPreAsignadas);
+    this.sugerenciasPreAsignadas.forEach(s=>{
+      s.cupoAsignado = true;
+      s.motivo = 'Asignado por el usuario';
+      s.confirmada = true;
+    });
+    this.sugerenciasPreAsignadas = [];
   }
 
   limpiarComisiones() {
     this.sugerenciasPreAsignadas= [];
     this.cambioDeSugerenciasPreAsignadas.emit(this.sugerenciasPreAsignadas);
     this.preasignado = false;
-    this.sugerenciasDeInscripcion.forEach(s => s.preasignado = false);
+    this.sugerenciasDeInscripcion.forEach(s => s.confirmada = false);
   }
 }

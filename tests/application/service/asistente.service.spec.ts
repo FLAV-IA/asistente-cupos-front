@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
-import { AsistenteService } from '../../../src/application/service/asistente.service';
+import { AsistenteService } from '../../../src/application/service/asistente/asistente.service';
 import { LoggingService } from '../../../src/application/service/logging.service';
-import { ASISTENTE_HTTP_CLIENT } from '../../../src/application/service/asistente-http-client.port';
+import { ASISTENTE_HTTP_CLIENT } from '../../../src/application/service/asistente/asistente-http-client.port';
 import { PeticionInscripcion } from '../../../src/domain/PeticionInscripcion';
 
 describe('AsistenteService', () => {

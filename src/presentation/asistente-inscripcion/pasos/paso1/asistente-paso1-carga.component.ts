@@ -1,19 +1,21 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {AsistentePanelComponent} from "../../asistente-panel/asistente-panel.component";
+import {Estado, StepState} from "../../utils/constants";
 
 @Component({
   selector: 'asistente-paso1-carga',
   standalone: true,
   imports: [CommonModule, AsistentePanelComponent],
-  template: `
-    <div class="grid">
-      <div class="col-12">
-        <asistente-panel (archivoCargadoEvent)="archivoCargado.emit($event)"></asistente-panel>
-      </div>
-    </div>
-  `
+  templateUrl: './asistente-paso1-carga.component.html',
 })
 export class AsistentePaso1CargaComponent {
   @Output() archivoCargado = new EventEmitter<File | null>();
+  @Output() onChangeEstado = new EventEmitter<Estado>();
+
+
+  darAvisoArchivoCargado(file: File | null) {
+    this.onChangeEstado.emit(  file ? 'previsualizando' : 'inicial');
+    this.archivoCargado.emit(file)
+  }
 }

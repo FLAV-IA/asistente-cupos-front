@@ -1,8 +1,8 @@
 import { Injectable, signal, WritableSignal, Inject } from '@angular/core';
 import * as Papa from 'papaparse';
-import { PeticionInscripcion } from '../../domain/PeticionInscripcion';
+import { PeticionInscripcion } from '../../../domain/PeticionInscripcion';
 import { CsvHttpClientPort, CSV_HTTP_CLIENT } from './csv-http-client.port';
-import { LoggingService } from './logging.service';
+import { LoggingService } from '../logging.service';
 
 @Injectable({
   providedIn: 'root',

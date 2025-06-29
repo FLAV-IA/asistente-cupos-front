@@ -1,0 +1,39 @@
+<div class="grid">
+  <div class="col-12">
+    <ng-container *ngIf="filePeticiones; else noArchivo">
+      <div class="flex justify-content-end gap-2 mb-3">
+        <button
+          pButton
+          type="button"
+          class="p-button-success p-button-rounded px-3"
+          [icon]="loading ? 'pi pi-spin pi-spinner' : 'pi pi-search'"
+          [label]="loading ? 'Procesando...' : 'Consultar'"
+          (click)="solicitarConsulta()"
+          [disabled]="loading">
+        </button>
+        <button
+          pButton
+          type="button"
+          label="Limpiar"
+          icon="pi pi-refresh"
+          class="p-button-secondary p-button-rounded px-3"
+          (click)="limpiar.emit()">
+        </button>
+      </div>
+
+      <previsualizador-peticiones-component
+        [archivoPeticiones]="filePeticiones"
+        (previsualizacionEvent)="cambioEnPrevisualizacion($event)">
+      </previsualizador-peticiones-component>
+    </ng-container>
+
+    <ng-template #noArchivo>
+      <animacion-placeholder
+        path="/assets/animaciones/contenidoNoDisponible.json"
+        mensaje="Aún no cargaste un archivo de peticiones"
+        [width]="500"
+        [height]="500">
+      </animacion-placeholder>
+    </ng-template>
+  </div>
+</div>

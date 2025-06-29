@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing'
-import { CsvService } from '../../../src/application/service/csv.service'
-import { CsvHttpClientPort, CSV_HTTP_CLIENT } from '../../../src/application/service/csv-http-client.port'
+import { CsvService } from '../../../src/application/service/csv/csv.service'
+import { CsvHttpClientPort, CSV_HTTP_CLIENT } from '../../../src/application/service/csv/csv-http-client.port'
 import { LoggingService } from '../../../src/application/service/logging.service'
 import { of } from 'rxjs'
 
