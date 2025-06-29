@@ -34,10 +34,6 @@ export class previsualizadorComisionesComponent {
     });
   }
 
-  ngOnInit() {
-    this.comisionService.refrescaLasComisiones();
-  }
-
   hayAsignacionesNoConfirmadas(comision:Comision): boolean {
     return comision.cantidadInscriptosConfirmados < comision.cantidadInscriptos;
   }

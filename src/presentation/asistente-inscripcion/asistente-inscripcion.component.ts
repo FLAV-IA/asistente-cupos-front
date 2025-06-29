@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { StepperModule } from 'primeng/stepper';
 import { StepsModule } from 'primeng/steps';
-import { MenuItem } from 'primeng/api';
+import {ConfirmationService, MenuItem} from 'primeng/api';
 
 import { SugerenciaDeInscripcion } from '../../domain/SugerenciaDeInscripcion';
 import { Comision } from '../../domain/Comision';
@@ -19,6 +19,7 @@ import { AsistentePaso2PrevisualizacionComponent } from './pasos/paso2/asistente
 import { AsistentePaso3SugerenciasComponent } from './pasos/paso3/asistente-paso3-sugerencias.component';
 
 import { StepState } from './utils/constants';
+import {ComisionService} from "../../application/service/comision/comision.service";
 
 @Component({
   selector: 'asistente-inscripcion2',
@@ -48,9 +49,19 @@ export class AsistenteComponent {
   readonly loading = this.asistenteService.loading;
   private readonly csvService = inject(CsvService);
   private readonly asignador = inject(Asignador);
+  private readonly comisionService = inject(ComisionService);
+  readonly obtenerComisiones = this.comisionService.comisionesActualizadas;
 
+  ngOnInit() {
+   this.comisionService.refrescaLasComisiones();
+   this.comisiones= this.ordernarComisiones();
+  }
 
   constructor() {
+    effect(() => {
+      this.comisiones = this.obtenerComisiones();
+    });
+
     effect(() => {
       this.sugerenciasDeInscripcion = this.asistenteService.cuposSugeridos$();
 
@@ -62,8 +73,8 @@ export class AsistenteComponent {
         this.estado = 'error';
       }
     });
-
   }
+
 
   onArchivoCargado(file: File | null) {
     this.filePeticiones = file;
@@ -84,6 +95,7 @@ export class AsistenteComponent {
   }
 
   asignarAComision(sugerencia: SugerenciaDeInscripcion): void {
+    console.log("Asignando sugerencia a comisión:", sugerencia);
     this.asignador.asignarSugerencia(sugerencia);
     this.comisiones = this.ordernarComisiones();
   }
