@@ -6,41 +6,60 @@
 >
   <ng-template pTemplate="header">
     <tr>
-      <th>Historia Académica</th>
+      <th class="text-lg text-primary">Historia Académica</th>
     </tr>
   </ng-template>
   <ng-template pTemplate="body" let-historiaAcademica>
     <tr>
       <td>
-        <div style="min-width: 300px">
-          <h4>{{ historiaAcademica.dni }}</h4>
-          <div>
+        <div
+          class="p-3 shadow-2 border-round surface-100"
+          style="min-width: 300px; background-color: white"
+        >
+          <h4 class="text-primary mb-2">
+            <i class="pi pi-user mr-2"></i>{{ historiaAcademica.dni }}
+          </h4>
+
+          <div class="mb-1">
+            <i class="pi pi-book mr-2 text-blue-400"></i>
             <strong>Total Inscripciones:</strong>
             {{ historiaAcademica.totalInscripcionesHistoricas }}
           </div>
-          <div>
+
+          <div class="mb-1">
+            <i class="pi pi-check-circle mr-2 text-green-400"></i>
             <strong>Total Aprobadas:</strong>
             {{ historiaAcademica.totalHistoricasAprobadas }}
           </div>
-          <div>
-            <strong>Coeficiente:</strong> {{ historiaAcademica.coeficiente }}
+
+          <div class="mb-1">
+            <i class="pi pi-chart-line mr-2 text-purple-400"></i>
+            <strong>Coeficiente:</strong>
+            {{ historiaAcademica.coeficiente }}
           </div>
-          <div>
+
+          <div class="mb-1">
+            <i class="pi pi-link mr-2 text-cyan-400"></i>
             <strong>Correlativas cumplidas:</strong>
             {{ historiaAcademica.cumpleCorrelativas ? 'Sí' : 'No' }}
           </div>
-          <div>
+
+          <div class="mb-1">
+            <i class="pi pi-list mr-2 text-orange-400"></i>
             <strong>Cursadas anteriores:</strong>
-            {{ historiaAcademica.codigosCursadasAnteriores?.join(', ') }}
+            {{ historiaAcademica.codigosCursadasAnteriores?.join(', ') || '-' }}
           </div>
-          <div>
+
+          <div class="mb-3">
+            <i class="pi pi-file-edit mr-2 text-teal-400"></i>
             <strong>Inscripciones actuales:</strong>
-            {{ historiaAcademica.codigosInscripcionesActuales?.join(', ') }}
+            {{ historiaAcademica.codigosInscripcionesActuales?.join(', ') || '-' }}
           </div>
+
           <button
             pButton
             icon="pi pi-trash"
-            class="p-button-danger p-button-sm mt-2"
+            class="p-button-danger p-button-sm"
             (click)="eliminarHistoriaAcademica(historiaAcademica)"
             label="Quitar"
           ></button>
@@ -49,3 +68,4 @@
     </tr>
   </ng-template>
 </p-table>
+
